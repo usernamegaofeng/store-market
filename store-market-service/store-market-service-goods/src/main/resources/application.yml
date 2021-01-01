@@ -1,0 +1,39 @@
+server:
+  port: 9100
+spring:
+  application:
+    name: store-goods
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/store_goods?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 12345
+#eureka 配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:9000/eureka
+  instance:
+    prefer-ip-address: true
+feign:
+  hystrix:
+    enabled: true
+
+#hystrix 配置
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          #如果enabled设置为false，则请求超时交给ribbon控制
+          enabled: true
+        isolation:
+          strategy: SEMAPHORE
+
+swagger:
+  base-package: pers.store.market.controller
+  title: SpringCloud2.x构建微服务项目-品牌服务接口
+  description: 该项目是“基于SpringCloud2.x构建微服务电商项目”
+  version: 1.0
+  contact:
+    name: 中级Java开发工程师-高枫
