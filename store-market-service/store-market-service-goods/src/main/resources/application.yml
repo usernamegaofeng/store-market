@@ -8,7 +8,7 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/store_goods?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: 12345
-#eureka 配置
+### eureka配置
 eureka:
   client:
     service-url:
@@ -19,7 +19,7 @@ feign:
   hystrix:
     enabled: true
 
-#hystrix 配置
+### hystrix配置
 hystrix:
   command:
     default:
@@ -30,10 +30,10 @@ hystrix:
         isolation:
           strategy: SEMAPHORE
 
+### swagger配置
 swagger:
-  base-package: pers.store.market.controller
+  base-package: pers.store.market.goods.controller
   title: SpringCloud2.x构建微服务项目-品牌服务接口
   description: 该项目是“基于SpringCloud2.x构建微服务电商项目”
   version: 1.0
-  contact:
-    name: 中级Java开发工程师-高枫
+  enabled: true

@@ -21,6 +21,7 @@ import java.util.Map;
  * @date 2021/1/1 下午8:08
  */
 @Api(tags = "品牌服务前端控制器")
+@CrossOrigin   //跨域请求,todo 在网关统一配置全局跨域
 @RestController
 @RequestMapping("/brand")
 public class BrandController {

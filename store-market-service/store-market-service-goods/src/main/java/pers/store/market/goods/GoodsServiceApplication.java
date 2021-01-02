@@ -10,6 +10,8 @@ import tk.mybatis.spring.annotation.MapperScan;
 /**
  * @author 高枫
  * @date 2021/1/1 下午6:58
+ *
+ *  品牌服务启动器
  */
 @SpringBootApplication
 @EnableFeignClients
