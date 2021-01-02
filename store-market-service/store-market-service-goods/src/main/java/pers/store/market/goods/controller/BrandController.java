@@ -7,9 +7,9 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pers.store.market.common.pojo.PageResult;
-import pers.store.market.common.pojo.Result;
-import pers.store.market.common.pojo.StatusCode;
+import pers.store.market.common.core.PageResult;
+import pers.store.market.common.core.Result;
+import pers.store.market.common.core.StatusCode;
 import pers.store.market.goods.domain.pojo.Brand;
 import pers.store.market.goods.service.IBrandService;
 

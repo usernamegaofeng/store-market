@@ -1,4 +1,4 @@
-package pers.store.market.common.pojo;
+package pers.store.market.common.core;
 
 /**
  * 返回码

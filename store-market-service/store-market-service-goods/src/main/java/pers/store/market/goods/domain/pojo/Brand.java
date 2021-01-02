@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * @author 高枫
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 @Data
 @Table(name = "tb_brand")
 @ApiModel("品牌实体类")
-public class Brand {
+public class Brand implements Serializable {
 
     @Id
     @ApiModelProperty(value = "品牌id")

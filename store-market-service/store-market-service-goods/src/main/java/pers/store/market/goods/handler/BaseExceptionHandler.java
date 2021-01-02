@@ -3,8 +3,8 @@ package pers.store.market.goods.handler;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import pers.store.market.common.pojo.Result;
-import pers.store.market.common.pojo.StatusCode;
+import pers.store.market.common.core.Result;
+import pers.store.market.common.core.StatusCode;
 
 /**
  * 统一异常处理类
