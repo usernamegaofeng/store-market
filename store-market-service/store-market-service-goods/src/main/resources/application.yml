@@ -37,3 +37,7 @@ swagger:
   description: 该项目是“基于SpringCloud2.x构建微服务电商项目”
   version: 1.0
   enabled: true
+
+### 分布式ID
+workerId: 0
+datacenterId: 0
