@@ -9,51 +9,74 @@ import java.util.Map;
 /**
  * @author 高枫
  * @date 2021/1/1 下午7:24
- *
- *  品牌服务接口
+ * <p>
+ * 品牌服务接口
  */
 public interface IBrandService {
 
-    /**
-     * 品牌列表查询
+    /***
+     * 查询所有
+     * @return
      */
-    List<Brand> findList();
+    List<Brand> findAll();
 
     /**
-     * 根据id查询品牌数据
+     * 根据ID查询
+     *
+     * @param id
+     * @return
      */
     Brand findById(Integer id);
 
-    /**
-     * 品牌新增
+    /***
+     * 新增
+     * @param brand
      */
     void add(Brand brand);
 
-    /**
-     * 品牌修改
+    /***
+     * 修改
+     * @param brand
      */
     void update(Brand brand);
 
-    /**
-     * 品牌删除
+    /***
+     * 删除
+     * @param id
      */
-    void delById(Integer id);
+    void delete(Integer id);
+
+    /***
+     * 多条件搜索
+     * @param searchMap
+     * @return
+     */
+    List<Brand> findList(Map<String, Object> searchMap);
+
+    /***
+     * 分页查询
+     * @param page
+     * @param size
+     * @return
+     */
+    Page<Brand> findPage(int page, int size);
+
+    /***
+     * 多条件分页查询
+     * @param searchMap
+     * @param page
+     * @param size
+     * @return
+     */
+    Page<Brand> findPage(Map<String, Object> searchMap, int page, int size);
 
     /**
-     * 品牌列表条件查询
+     * 根据分类名称查询品牌列表
+     *
+     * @param categoryName
+     * @return
      */
-    List<Brand> list(Map<String,Object> searchMap);
+    public List<Map> findBrandListByCategoryName(String categoryName);
 
-    /**
-     * 品牌列表分页查询
-     * page:当前的页码
-     * size:每页显示多少条
-     */
-    Page<Brand> findPage(int page,int size);
-
-    /**
-     * 品牌列表分页+条件查询
-     */
-    Page<Brand> findPage(Map<String,Object> searchMap, int page, int size);
 
 }

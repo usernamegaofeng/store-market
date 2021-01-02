@@ -32,7 +32,7 @@ public class BrandController {
     @GetMapping("/findList")
     @ApiOperation(value = "获取品牌列表")
     public Result<List<Brand>> findList() {
-        List<Brand> brandList = brandService.findList();
+        List<Brand> brandList = brandService.findAll();
         return new Result<>(true, StatusCode.OK, "查询成功", brandList);
     }
 
@@ -67,19 +67,26 @@ public class BrandController {
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "id", dataType = "Integer", required = true, value = "品牌ID")})
     public Result delById(@PathVariable("id") Integer id) {
-        brandService.delById(id);
+        brandService.delete(id);
         return new Result(true, StatusCode.OK, "删除成功");
     }
 
     @GetMapping("/search")
     @ApiOperation(value = "组合条件查询品牌列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "searchMap", dataType = "Map", required = true, value = "查询参数")
+    })
     public Result<List<Brand>> search(@RequestParam Map searchMap) {
-        List<Brand> list = brandService.list(searchMap);
+        List<Brand> list = brandService.findList(searchMap);
         return new Result<>(true, StatusCode.OK, "查询成功", list);
     }
 
     @GetMapping("/search/{page}/{size}")
     @ApiOperation(value = "分页查询品牌列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "page", dataType = "int", required = true, value = "页码"),
+            @ApiImplicitParam(paramType = "query", name = "size", dataType = "int", required = true, value = "条数")
+    })
     public Result findPage(@PathVariable("page") int page, @PathVariable("size") int size) {
         Page<Brand> pageInfo = brandService.findPage(page, size);
         PageResult pageResult = new PageResult(pageInfo.getTotal(), pageInfo.getResult());
@@ -88,9 +95,25 @@ public class BrandController {
 
     @GetMapping("/searchPage/{page}/{size}")
     @ApiOperation(value = "组合条件分页查询品牌列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "searchMap", dataType = "Map", required = true, value = "查询参数"),
+            @ApiImplicitParam(paramType = "query", name = "page", dataType = "int", required = true, value = "页码"),
+            @ApiImplicitParam(paramType = "query", name = "size", dataType = "int", required = true, value = "条数")
+    })
     public Result findPage(@RequestParam Map searchMap, @PathVariable("page") int page, @PathVariable("size") int size) {
         Page pageInfo = brandService.findPage(searchMap, page, size);
         PageResult pageResult = new PageResult(pageInfo.getTotal(), pageInfo.getResult());
         return new Result(true, StatusCode.OK, "查询成功", pageResult);
     }
+
+    @GetMapping("/category/{category}")
+    @ApiOperation(value = "根据分类名称查询品牌列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "category", dataType = "String", required = true, value = "分类名称")
+    })
+    public Result findListByCategoryName(@PathVariable String category) {
+        List<Map> brandList = brandService.findBrandListByCategoryName(category);
+        return new Result(true, StatusCode.OK, "查询成功", brandList);
+    }
+
 }
