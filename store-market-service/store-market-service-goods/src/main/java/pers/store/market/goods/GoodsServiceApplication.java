@@ -32,7 +32,7 @@ public class GoodsServiceApplication {
     private Integer datacenterId;
 
     @Bean
-    public IdWorker getIdWorker() {
+    public IdWorker idWorker() {
         IdWorker idWorker = new IdWorker(workerId, datacenterId);
         return idWorker;
     }

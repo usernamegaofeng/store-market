@@ -38,6 +38,11 @@ swagger:
   version: 1.0
   enabled: true
 
+logging:
+   level:
+     pers.store.market.goods.dao: DEBUG
+
 ### 分布式ID
 workerId: 0
 datacenterId: 0
+
