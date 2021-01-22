@@ -1,8 +1,8 @@
 package pers.store.market.ware;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * @author Gaofeng
@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @description: 库存wms服务启动类
  */
 @SpringBootApplication
-@MapperScan("pers.store.market.ware.dao")
+@EnableDiscoveryClient
 public class WareServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(WareServiceApplication.class, args);
