@@ -1,0 +1,24 @@
+server:
+  port: 8100
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.97.69.141:3306/store_wms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 12345
+
+# mybatis plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  typeAliasesPackage: pers.store.market.ware.entity
+  global-config:
+    db-config:
+      id-type: auto   #id策略自增长,可以使用zookeeper生成主键ID
+    #原生配置
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    call-setters-on-nulls: true
+    jdbc-type-for-null: 'null'

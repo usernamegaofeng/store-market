@@ -7,15 +7,24 @@
     <artifactId>store-market</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <description>聚合父工程</description>
+    <modules>
+        <module>store-market-order</module>
+        <module>store-market-ware</module>
+        <module>store-market-coupon</module>
+        <module>store-market-member</module>
+        <module>store-market-commons</module>
+        <module>store-market-product</module>
+        <module>store-market-admin</module>
+        <module>renren-generator</module>
+    </modules>
+
+    <!--父依赖-->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.1.4.RELEASE</version>
     </parent>
-
-    <properties>
-        <skipTests>true</skipTests>
-    </properties>
 
     <!--依赖包-->
     <dependencies>
@@ -25,15 +34,27 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.16</version>
+        </dependency>
     </dependencies>
 
-    <!--spring cloud版本管理-->
+    <!--spring cloud和spring cloud Alibaba版本管理-->
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>Greenwich.SR1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2.1.0.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
