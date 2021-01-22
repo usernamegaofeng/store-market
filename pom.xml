@@ -7,16 +7,6 @@
     <artifactId>store-market</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>store-market-gateway</module>
-        <module>store-market-service-api</module>
-        <module>store-market-service</module>
-        <module>store-market-web</module>
-        <module>store-market-eureka</module>
-        <module>store-market-common</module>
-        <module>store-market-common-db</module>
-    </modules>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
