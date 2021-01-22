@@ -6,13 +6,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author Gaofeng
- * @date 2021/1/22 下午8:18
- * @description: 库存wms服务启动类
+ * @date 2021/1/22 下午8:50
+ * @description: 优惠服务启动类
  */
 @SpringBootApplication
-@MapperScan("pers.store.market.ware.dao")
-public class WareServiceApplication {
+@MapperScan("pers.store.market.coupon.dao")
+public class CouponServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(WareServiceApplication.class, args);
+        SpringApplication.run(CouponServiceApplication.class, args);
     }
 }

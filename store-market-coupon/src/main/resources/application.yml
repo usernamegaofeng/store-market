@@ -1,17 +1,17 @@
 server:
-  port: 10000
+  port: 6000
 
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://47.97.69.141:3306/store_wms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://47.97.69.141:3306/store_sms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 12345
 
 # mybatis plus配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
-  typeAliasesPackage: pers.store.market.ware.entity
+  typeAliasesPackage: pers.store.market.coupon.entity
   global-config:
     db-config:
       id-type: auto   #id策略自增长,可以使用zookeeper生成主键ID

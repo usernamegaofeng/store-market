@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: store-ware  #服务名称,与配置中心名称一致
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 47.97.69.141:8848
+        namespace: c8bceb9e-4b19-446e-a836-8bcb843871be
+      config:
+        server-addr: 47.97.69.141:8848
+        namespace: c8bceb9e-4b19-446e-a836-8bcb843871be
+        file-extension: yaml
