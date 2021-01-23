@@ -38,7 +38,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("订单服务API文档")
                 .description("powered by gao")
-                .termsOfServiceUrl("https://github.com/usernamegaofeng")
+                .termsOfServiceUrl("localhost:9200")
                 .contact(new Contact("Gaofeng", "https://github.com/usernamegaofeng", ""))
                 .version("1.0")
                 .build();
