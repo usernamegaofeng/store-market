@@ -3,6 +3,9 @@ package ${package}.${moduleName}.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,60 +26,57 @@ import ${mainPath}.common.utils.R;
  * @email ${email}
  * @date ${datetime}
  */
+@Api(tags = "${comments}接口")
 @RestController
 @RequestMapping("${moduleName}/${pathName}")
 public class ${className}Controller {
+
     @Autowired
     private ${className}Service ${classname}Service;
 
-    /**
-     * 列表
-     */
-    @RequestMapping("/list")
+
+    @GetMapping("/list")
+    @ApiOperation(value = "分页查询列表")
+    @ApiImplicitParam(paramType = "query", name = "params", dataType = "Map", required = true, value = "分页列表请求参数")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = ${classname}Service.queryPage(params);
-
         return R.ok().put("page", page);
     }
 
 
-    /**
-     * 信息
-     */
-    @RequestMapping("/info/{${pk.attrname}}")
+
+    @GetMapping(value = "/info/{${pk.attrname}}")
+    @ApiOperation(value = "查询信息")
+    @ApiImplicitParam(paramType = "path", name = "id", dataType = "Long", required = true, value = "ID")
     public R info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}){
 		${className}Entity ${classname} = ${classname}Service.getById(${pk.attrname});
-
         return R.ok().put("${classname}", ${classname});
     }
 
-    /**
-     * 保存
-     */
-    @RequestMapping("/save")
+
+    @PostMapping("/save")
+    @ApiOperation(value = "保存操作")
+    @ApiImplicitParam(paramType = "body", name = "${classname}", dataType = "${className}Entity", required = true, value = "实体类")
     public R save(@RequestBody ${className}Entity ${classname}){
 		${classname}Service.save(${classname});
-
         return R.ok();
     }
 
-    /**
-     * 修改
-     */
-    @RequestMapping("/update")
+
+    @PostMapping("/update")
+    @ApiOperation(value = "修改操作")
+    @ApiImplicitParam(paramType = "body", name = "${classname}", dataType = "${className}Entity", required = true, value = "实体类")
     public R update(@RequestBody ${className}Entity ${classname}){
 		${classname}Service.updateById(${classname});
-
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
-    @RequestMapping("/delete")
+
+    @PostMapping("/delete")
+    @ApiOperation(value = "批量删除", notes = "根据id集合集来批量删除对象")
+    @ApiImplicitParam(paramType = "body", name = "${pk.attrname}s", dataType = "${pk.attrType}", allowMultiple = true, required = true, value = "ID数组")
     public R delete(@RequestBody ${pk.attrType}[] ${pk.attrname}s){
 		${classname}Service.removeByIds(Arrays.asList(${pk.attrname}s));
-
         return R.ok();
     }
 

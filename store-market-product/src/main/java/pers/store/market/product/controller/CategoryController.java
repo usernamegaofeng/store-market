@@ -3,17 +3,15 @@ package pers.store.market.product.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import pers.store.market.common.utils.PageUtils;
-import pers.store.market.common.utils.R;
+import org.springframework.web.bind.annotation.*;
 import pers.store.market.product.entity.CategoryEntity;
 import pers.store.market.product.service.CategoryService;
+import pers.store.market.common.utils.PageUtils;
+import pers.store.market.common.utils.R;
 
 
 /**
@@ -21,62 +19,58 @@ import pers.store.market.product.service.CategoryService;
  *
  * @author Gaofeng
  * @email 944742829@qq.com
- * @date 2021-01-22 18:00:45
+ * @date 2021-01-23 16:42:15
  */
+@Api(tags = "商品三级分类接口")
 @RestController
 @RequestMapping("product/category")
 public class CategoryController {
+
     @Autowired
     private CategoryService categoryService;
 
-    /**
-     * 列表
-     */
-    @RequestMapping("/list")
+
+    @GetMapping("/list")
+    @ApiOperation(value = "分页查询列表")
+    @ApiImplicitParam(paramType = "query", name = "params", dataType = "Map", required = true, value = "分页列表请求参数")
     public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = categoryService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 
 
-    /**
-     * 信息
-     */
-    @RequestMapping("/info/{catId}")
+    @GetMapping(value = "/info/{catId}")
+    @ApiOperation(value = "查询信息")
+    @ApiImplicitParam(paramType = "path", name = "id", dataType = "Long", required = true, value = "ID")
     public R info(@PathVariable("catId") Long catId) {
         CategoryEntity category = categoryService.getById(catId);
-
         return R.ok().put("category", category);
     }
 
-    /**
-     * 保存
-     */
-    @RequestMapping("/save")
+
+    @PostMapping("/save")
+    @ApiOperation(value = "保存操作")
+    @ApiImplicitParam(paramType = "body", name = "category", dataType = "CategoryEntity", required = true, value = "实体类")
     public R save(@RequestBody CategoryEntity category) {
         categoryService.save(category);
-
         return R.ok();
     }
 
-    /**
-     * 修改
-     */
-    @RequestMapping("/update")
+
+    @PostMapping("/update")
+    @ApiOperation(value = "修改操作")
+    @ApiImplicitParam(paramType = "body", name = "category", dataType = "CategoryEntity", required = true, value = "实体类")
     public R update(@RequestBody CategoryEntity category) {
         categoryService.updateById(category);
-
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
-    @RequestMapping("/delete")
+
+    @PostMapping("/delete")
+    @ApiOperation(value = "批量删除", notes = "根据id集合集来批量删除对象")
+    @ApiImplicitParam(paramType = "body", name = "catIds", dataType = "Long", allowMultiple = true, required = true, value = "ID数组")
     public R delete(@RequestBody Long[] catIds) {
         categoryService.removeByIds(Arrays.asList(catIds));
-
         return R.ok();
     }
 
