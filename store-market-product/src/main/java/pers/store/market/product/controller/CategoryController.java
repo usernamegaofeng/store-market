@@ -70,7 +70,8 @@ public class CategoryController {
     @ApiOperation(value = "批量删除", notes = "根据id集合集来批量删除对象")
     @ApiImplicitParam(paramType = "body", name = "catIds", dataType = "Long", allowMultiple = true, required = true, value = "ID数组")
     public R delete(@RequestBody Long[] catIds) {
-        categoryService.removeByIds(Arrays.asList(catIds));
+        //categoryService.removeByIds(Arrays.asList(catIds));
+        categoryService.removeBatchByIds(Arrays.asList(catIds));
         return R.ok();
     }
 

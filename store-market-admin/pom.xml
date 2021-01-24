@@ -6,7 +6,7 @@
 	<artifactId>renren-fast</artifactId>
 	<version>3.0.0</version>
 	<packaging>jar</packaging>
-	<description>基于renren-fast的后台管理服务</description>
+	<description>基于renren-fast的后台管理平台</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -51,6 +51,11 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>pers.store.market</groupId>
+			<artifactId>store-market-commons</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

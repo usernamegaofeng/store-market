@@ -37,8 +37,15 @@ spring:
         min-idle: 5       # 连接池中的最小空闲连接
   mvc:
     throw-exception-if-no-handler-found: true
-#  resources:
-#    add-mappings: false
+
+  application:
+    name: store-admin
+  # 服务注册
+  cloud:
+    nacos:
+      discovery:
+        server-addr:  47.97.69.141:8848
+        namespace:  c8bceb9e-4b19-446e-a836-8bcb843871be
 
 
 #mybatis

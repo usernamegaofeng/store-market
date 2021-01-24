@@ -67,4 +67,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return childrenList;
     }
 
+
+    /**
+     * 批量删除(逻辑删除)
+     *
+     * @param ids 分类ID数组
+     *            todo 如果分类有其他关联,不能进行删除操作
+     */
+    @Override
+    public void removeBatchByIds(List<Long> ids) {
+        baseMapper.deleteBatchIds(ids);
+    }
 }

@@ -2,6 +2,7 @@ package pers.store.market.product.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
@@ -47,7 +48,9 @@ public class CategoryEntity implements Serializable {
     private Integer catLevel;
     /**
      * 是否显示[0-不显示，1显示]
+     * 使用@TableLogic 表示逻辑删除,只要指定字段值即可,value = ""未删除的值,delval=""删除后的值
      */
+    @TableLogic(value = "1", delval = "0")
     @ApiModelProperty(value = "是否显示[0-不显示，1显示]")
     private Integer showStatus;
     /**

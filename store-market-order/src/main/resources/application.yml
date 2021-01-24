@@ -4,9 +4,17 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://47.97.69.141:3306/store_oms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://gz-cdb-0iezsypz.sql.tencentcdb.com:59218/store_oms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 12345
+
+  #服务注册
+  cloud:
+    nacos:
+      discovery:
+        server-addr:  47.97.69.141:8848
+        namespace: c8bceb9e-4b19-446e-a836-8bcb843871be
+
 
 # mybatis plus配置
 mybatis-plus:
