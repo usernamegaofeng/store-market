@@ -1,6 +1,7 @@
 package pers.store.market.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import io.swagger.annotations.Api;
@@ -30,12 +31,11 @@ public class CategoryController {
     private CategoryService categoryService;
 
 
-    @GetMapping("/list")
-    @ApiOperation(value = "分页查询列表")
-    @ApiImplicitParam(paramType = "query", name = "params", dataType = "Map", required = true, value = "分页列表请求参数")
-    public R list(@RequestParam Map<String, Object> params) {
-        PageUtils page = categoryService.queryPage(params);
-        return R.ok().put("page", page);
+    @GetMapping("/list/tree")
+    @ApiOperation(value = "查询所有分类包含子分类")
+    public R list() {
+        List<CategoryEntity> categoryEntityList = categoryService.queryByTree();
+        return R.ok().put("data", categoryEntityList);
     }
 
 
