@@ -65,6 +65,13 @@ public class CategoryController {
         return R.ok();
     }
 
+    @PostMapping("/updateNodes")
+    @ApiOperation(value = "修改分类节点顺序")
+    @ApiImplicitParam(paramType = "body", name = "category", dataType = "CategoryEntity",allowMultiple = true, required = true, value = "实体类")
+    public R updateNodes(@RequestBody CategoryEntity[] category) {
+        categoryService.updateBatchById(Arrays.asList(category));
+        return R.ok();
+    }
 
     @PostMapping("/delete")
     @ApiOperation(value = "批量删除", notes = "根据id集合集来批量删除对象")
