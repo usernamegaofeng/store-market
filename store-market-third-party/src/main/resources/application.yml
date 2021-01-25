@@ -1,0 +1,15 @@
+server:
+  port: 10000
+
+spring:
+  cloud:
+    alicloud:
+      access-key: LTAI4G7VYpTg2esDYh6K1tvj
+      secret-key: VJZbbYXGJNyMjadXMVXqhWw0u9uNm3
+      oss:
+        endpoint: oss-cn-hangzhou.aliyuncs.com
+        bucket: 2021-test
+    nacos:
+      discovery:
+        server-addr: 47.97.69.141:8848
+        namespace: c8bceb9e-4b19-446e-a836-8bcb843871be

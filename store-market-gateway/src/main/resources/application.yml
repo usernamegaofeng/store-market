@@ -43,9 +43,16 @@ spring:
           filters:
             - StripPrefix=1
 
+        - id: third-party-route
+          uri: lb://store-third-party
+          predicates:
+            - Path=/api/thirdparty/**
+          filters:
+            - RewritePath=/api/thirdparty(?<segment>/?.*), /$\{segment}  #重写路径
+
         - id: admin-route
           uri: lb://store-admin
           predicates:
             - Path=/api/**
           filters:
-            - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment}  #重写路径
+            - RewritePath=/api/(?<segment>/?.*), /renren-fast/$\{segment} #重写路径

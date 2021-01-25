@@ -25,6 +25,7 @@
         <module>store-market-admin</module>
         <module>renren-generator</module>
         <module>store-market-gateway</module>
+        <module>store-market-third-party</module>
     </modules>
 
     <properties>
