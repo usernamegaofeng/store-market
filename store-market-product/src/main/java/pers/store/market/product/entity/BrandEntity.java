@@ -9,6 +9,10 @@ import java.util.Date;
 import lombok.Data;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import pers.store.market.common.valid.ListValue;
+import pers.store.market.common.valid.UpdateGroup;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * 品牌
@@ -27,6 +31,7 @@ public class BrandEntity implements Serializable {
      */
     @TableId
     @ApiModelProperty(value = "品牌id")
+    @NotNull(message = "品牌id不能为空",groups = UpdateGroup.class)
     private Long brandId;
     /**
      * 品牌名
@@ -47,6 +52,7 @@ public class BrandEntity implements Serializable {
      * 显示状态[0-不显示；1-显示]
      */
     @ApiModelProperty(value = "显示状态[0-不显示；1-显示]")
+    @ListValue(vals = {0,1})  //自定义注解
     private Integer showStatus;
     /**
      * 检索首字母

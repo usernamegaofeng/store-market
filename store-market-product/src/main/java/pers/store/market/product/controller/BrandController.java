@@ -7,11 +7,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import pers.store.market.common.valid.UpdateGroup;
 import pers.store.market.product.entity.BrandEntity;
 import pers.store.market.product.service.BrandService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.R;
+
+import javax.validation.Valid;
 
 
 /**
@@ -51,7 +55,7 @@ public class BrandController {
     @PostMapping("/save")
     @ApiOperation(value = "保存操作")
     @ApiImplicitParam(paramType = "body", name = "brand", dataType = "BrandEntity", required = true, value = "实体类")
-    public R save(@RequestBody BrandEntity brand) {
+    public R save(@RequestBody @Validated BrandEntity brand) {
         brandService.save(brand);
         return R.ok();
     }
@@ -60,7 +64,7 @@ public class BrandController {
     @PostMapping("/update")
     @ApiOperation(value = "修改操作")
     @ApiImplicitParam(paramType = "body", name = "brand", dataType = "BrandEntity", required = true, value = "实体类")
-    public R update(@RequestBody BrandEntity brand) {
+    public R update(@RequestBody @Validated(UpdateGroup.class) BrandEntity brand) {
         brandService.updateById(brand);
         return R.ok();
     }

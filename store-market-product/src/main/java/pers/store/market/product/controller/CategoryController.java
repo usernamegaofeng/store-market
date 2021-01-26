@@ -65,7 +65,7 @@ public class CategoryController {
         return R.ok();
     }
 
-    @PostMapping("/updateNodes")
+    @PostMapping("/update/sort")
     @ApiOperation(value = "修改分类节点顺序")
     @ApiImplicitParam(paramType = "body", name = "category", dataType = "CategoryEntity",allowMultiple = true, required = true, value = "实体类")
     public R updateNodes(@RequestBody CategoryEntity[] category) {

@@ -3,6 +3,12 @@ server:
 
 spring:
   cloud:
+    alicloud:
+      access-key: U2FsdGVkX19x5eZEl/3/Yqhx4rv5qwoEIIEBEhAN4wFRyp5r9jP22TZ0baqs8myD
+      secret-key: U2FsdGVkX19C24dJzpAANwM5ktYdRlvQCVjSqcdIUIS7gomctq3mJow0TUOj3REM
+      oss:
+        endpoint: oss-cn-hangzhou.aliyuncs.com
+        bucket: 2021-test
     nacos:
       discovery:
         server-addr: 47.97.69.141:8848

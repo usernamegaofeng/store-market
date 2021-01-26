@@ -1,4 +1,6 @@
-package pers.store.market.common.exception;
+package pers.store.market.common.enums;
+
+import lombok.Getter;
 
 /***
  * 错误码和错误信息定义类
@@ -15,22 +17,22 @@ package pers.store.market.common.exception;
  *
  *
  */
-public enum BizCodeEnume {
-    UNKNOW_EXCEPTION(10000,"系统未知异常"),
-    VAILD_EXCEPTION(10001,"参数格式校验失败");
+@Getter
+public enum ResultEnum {
+    SUCCESS(0, "执行成功"),
+    SYSTEM_ERROR(10000, "系统错误"),
+    PARAM_ERROR(10001, "参数错误"),
+    CREATE_FAILED(10002, "保存失败"),
+    UPDATE_FAILED(10003, "更新失败"),
+    DELETE_FAILED(10004, "删除失败"),
+    QUERY_FAILED(10005, "查询失败");
 
     private int code;
     private String msg;
-    BizCodeEnume(int code,String msg){
+
+    ResultEnum(int code, String msg) {
         this.code = code;
         this.msg = msg;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
 }

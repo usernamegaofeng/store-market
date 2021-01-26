@@ -5,6 +5,7 @@ import java.util.Map;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import pers.store.market.product.entity.AttrGroupEntity;
 import pers.store.market.product.service.AttrGroupService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.R;
+import pers.store.market.product.service.CategoryService;
 
 
 /**
@@ -28,6 +30,8 @@ public class AttrGroupController {
 
     @Autowired
     private AttrGroupService attrGroupService;
+    @Autowired
+    private CategoryService CategoryService;
 
 
     @GetMapping("/list")
@@ -38,12 +42,25 @@ public class AttrGroupController {
         return R.ok().put("page", page);
     }
 
+    @GetMapping("/list/{categoryId}")
+    @ApiOperation(value = "分页查询列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "params", dataType = "Map", required = true, value = "分页列表请求参数"),
+            @ApiImplicitParam(paramType = "path", name = "categoryId", dataType = "Long", required = true, value = "三级分类ID")
+    })
+    public R list(@RequestParam Map<String, Object> params, @PathVariable("categoryId") Long categoryId) {
+        PageUtils page = attrGroupService.queryPageByCategoryId(params, categoryId);
+        return R.ok().put("page", page);
+    }
+
 
     @GetMapping(value = "/info/{attrGroupId}")
     @ApiOperation(value = "查询信息")
     @ApiImplicitParam(paramType = "path", name = "id", dataType = "Long", required = true, value = "ID")
     public R info(@PathVariable("attrGroupId") Long attrGroupId) {
         AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
+        Long[] path = CategoryService.findCategoryPath(attrGroup.getCatelogId());
+        attrGroup.setCategoryPath(path);
         return R.ok().put("attrGroup", attrGroup);
     }
 

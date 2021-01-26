@@ -1,4 +1,4 @@
 package pers.store.market.common.valid;
 
-public interface AddGroup {
+public interface CreateGroup {
 }

@@ -3,9 +3,7 @@ package pers.store.market.product.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -77,5 +75,30 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Override
     public void removeBatchByIds(List<Long> ids) {
         baseMapper.deleteBatchIds(ids);
+    }
+
+    /**
+     * 查询分类完整路径
+     *
+     * @param categoryId 分类ID
+     * @return
+     */
+    @Override
+    public Long[] findCategoryPath(Long categoryId) {
+        List<Long> pathList = new ArrayList<>();
+        List<Long> parentPath = findParentPath(categoryId, pathList);
+        Collections.reverse(parentPath);
+        return parentPath.toArray(new Long[parentPath.size()]);
+    }
+
+    //递归查询所有的分类ID,只要不是0的一级分类
+    private List<Long> findParentPath(Long categoryId, List<Long> path) {
+        //将当前ID添加到集合中去
+        path.add(categoryId);
+        CategoryEntity categoryEntity = this.getById(categoryId);
+        if (categoryEntity.getParentCid() != 0) {
+            findParentPath(categoryEntity.getParentCid(), path);
+        }
+        return path;
     }
 }

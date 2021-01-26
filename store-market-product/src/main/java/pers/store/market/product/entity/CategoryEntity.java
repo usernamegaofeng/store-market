@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -76,7 +77,9 @@ public class CategoryEntity implements Serializable {
 
     /**
      * ,父类下的子类分类,不需要持久化到数据库的字段
+     *  @JsonInclude(JsonInclude.Include.NON_EMPTY) 过滤空的集合
      */
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @TableField(exist = false)
     private List<CategoryEntity> childrenList;
 }
