@@ -1,6 +1,7 @@
 package pers.store.market.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import io.swagger.annotations.Api;
@@ -38,6 +39,14 @@ public class CategoryBrandRelationController {
         return R.ok().put("page", page);
     }
 
+    @GetMapping("/catelog/list")
+    @ApiOperation(value = "分页查询列表")
+    @ApiImplicitParam(paramType = "query", name = "params", dataType = "Map", required = true, value = "分页列表请求参数")
+    public R categoryList(@RequestParam("brandId") Long brandId) {
+        List<CategoryBrandRelationEntity> entityList = categoryBrandRelationService.queryCategoryList(brandId);
+        return R.ok().put("data", entityList);
+    }
+
 
     @GetMapping(value = "/info/{id}")
     @ApiOperation(value = "查询信息")
@@ -52,7 +61,7 @@ public class CategoryBrandRelationController {
     @ApiOperation(value = "保存操作")
     @ApiImplicitParam(paramType = "body", name = "categoryBrandRelation", dataType = "CategoryBrandRelationEntity", required = true, value = "实体类")
     public R save(@RequestBody CategoryBrandRelationEntity categoryBrandRelation) {
-        categoryBrandRelationService.save(categoryBrandRelation);
+        categoryBrandRelationService.saveDetail(categoryBrandRelation);
         return R.ok();
     }
 

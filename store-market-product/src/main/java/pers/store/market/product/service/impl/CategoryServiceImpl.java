@@ -1,6 +1,8 @@
 package pers.store.market.product.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -9,15 +11,20 @@ import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.transaction.annotation.Transactional;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.Query;
 import pers.store.market.product.dao.CategoryDao;
 import pers.store.market.product.entity.CategoryEntity;
+import pers.store.market.product.service.CategoryBrandRelationService;
 import pers.store.market.product.service.CategoryService;
 
 @Slf4j
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+
+    @Autowired
+    private CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -91,6 +98,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return parentPath.toArray(new Long[parentPath.size()]);
     }
 
+
     //递归查询所有的分类ID,只要不是0的一级分类
     private List<Long> findParentPath(Long categoryId, List<Long> path) {
         //将当前ID添加到集合中去
@@ -100,5 +108,19 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             findParentPath(categoryEntity.getParentCid(), path);
         }
         return path;
+    }
+
+    /**
+     * 修改操作,冗余字段数据保持一致
+     *
+     * @param category 分类实体
+     */
+    @Override
+    @Transactional
+    public void updateDetail(CategoryEntity category) {
+        this.updateById(category);
+        if (StringUtils.isNotBlank(category.getName())) {
+            categoryBrandRelationService.updateCategory(category.getCatId(),category.getName());
+        }
     }
 }

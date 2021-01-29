@@ -61,7 +61,7 @@ public class CategoryController {
     @ApiOperation(value = "修改操作")
     @ApiImplicitParam(paramType = "body", name = "category", dataType = "CategoryEntity", required = true, value = "实体类")
     public R update(@RequestBody CategoryEntity category) {
-        categoryService.updateById(category);
+        categoryService.updateDetail(category);
         return R.ok();
     }
 

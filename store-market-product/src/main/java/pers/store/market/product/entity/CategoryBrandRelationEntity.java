@@ -10,6 +10,8 @@ import lombok.Data;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 品牌分类关联
  *
@@ -32,11 +34,13 @@ public class CategoryBrandRelationEntity implements Serializable {
      * 品牌id
      */
     @ApiModelProperty(value = "品牌id")
+    @NotNull
     private Long brandId;
     /**
      * 分类id
      */
     @ApiModelProperty(value = "分类id")
+    @NotNull
     private Long catelogId;
     /**
      *

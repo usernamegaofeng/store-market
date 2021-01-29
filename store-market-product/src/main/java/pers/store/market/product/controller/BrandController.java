@@ -65,7 +65,7 @@ public class BrandController {
     @ApiOperation(value = "修改操作")
     @ApiImplicitParam(paramType = "body", name = "brand", dataType = "BrandEntity", required = true, value = "实体类")
     public R update(@RequestBody @Validated(UpdateGroup.class) BrandEntity brand) {
-        brandService.updateById(brand);
+        brandService.updateDetail(brand);
         return R.ok();
     }
 
