@@ -3,6 +3,7 @@ package pers.store.market.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.product.entity.AttrEntity;
+import pers.store.market.product.vo.AttrVo;
 
 import java.util.Map;
 
@@ -16,5 +17,13 @@ import java.util.Map;
 public interface AttrService extends IService<AttrEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void saveAttr(AttrVo attr);
+
+    PageUtils queryBasePage(Map<String, Object> params, Long categoryId, String type);
+
+    AttrVo getAttrDetail(Long attrId);
+
+    void updateAttr(AttrVo attr);
 }
 
