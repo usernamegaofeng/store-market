@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pers.store.market.product.entity.AttrEntity;
 import pers.store.market.product.entity.AttrGroupEntity;
+import pers.store.market.product.service.AttrAttrgroupRelationService;
 import pers.store.market.product.service.AttrGroupService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.R;
@@ -38,6 +39,8 @@ public class AttrGroupController {
     private CategoryService categoryService;
     @Autowired
     private AttrGroupService attrGroupService;
+    @Autowired
+    private AttrAttrgroupRelationService attrAttrgroupRelationService;
 
 
     @GetMapping("/{attrGroupId}/attr/relation")
@@ -46,6 +49,17 @@ public class AttrGroupController {
     public R getAttrRelation(@PathVariable("attrGroupId") Long attrGroupId) {
         List<AttrEntity> attrEntityList = attrService.getRelationAttr(attrGroupId);
         return R.ok().put("data", attrEntityList);
+    }
+
+    @GetMapping("/{attrGroupId}/noattr/relation")
+    @ApiOperation(value = "获取属性分组没有关联的所有属性")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "params", dataType = "Map", required = true, value = "分页列表请求参数"),
+            @ApiImplicitParam(paramType = "path", name = "attrGroupId", dataType = "Long", required = true, value = "分组ID")
+    })
+    public R getNoAttrRelation(@PathVariable("attrGroupId") Long attrGroupId, @RequestParam Map<String, Object> params) {
+        PageUtils page = attrService.getNoRelationAttr(attrGroupId, params);
+        return R.ok().put("page", page);
     }
 
     @GetMapping("/list")
@@ -84,6 +98,14 @@ public class AttrGroupController {
     @ApiImplicitParam(paramType = "body", name = "attrGroup", dataType = "AttrGroupEntity", required = true, value = "实体类")
     public R save(@RequestBody AttrGroupEntity attrGroup) {
         attrGroupService.save(attrGroup);
+        return R.ok();
+    }
+
+    @PostMapping("/attr/relation")
+    @ApiOperation(value = "添加属性与分组关联关系")
+    @ApiImplicitParam(paramType = "body", name = "relationVos", dataType = "AttrRelationVo", allowMultiple = true, required = true, value = "参数数组")
+    public R addRelation(@RequestBody AttrRelationVo[] relationVos) {
+        attrAttrgroupRelationService.addRelation(relationVos);
         return R.ok();
     }
 

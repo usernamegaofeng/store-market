@@ -3,6 +3,7 @@ package pers.store.market.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.product.entity.AttrAttrgroupRelationEntity;
+import pers.store.market.product.vo.AttrRelationVo;
 
 import java.util.Map;
 
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface AttrAttrgroupRelationService extends IService<AttrAttrgroupRelationEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void addRelation(AttrRelationVo[] relationVos);
 }
 
