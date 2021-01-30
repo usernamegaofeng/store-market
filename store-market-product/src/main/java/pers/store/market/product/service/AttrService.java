@@ -5,6 +5,7 @@ import pers.store.market.common.utils.PageUtils;
 import pers.store.market.product.entity.AttrEntity;
 import pers.store.market.product.vo.AttrVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,5 +26,7 @@ public interface AttrService extends IService<AttrEntity> {
     AttrVo getAttrDetail(Long attrId);
 
     void updateAttr(AttrVo attr);
+
+    List<AttrEntity> getRelationAttr(Long attrGroupId);
 }
 

@@ -1,6 +1,7 @@
 package pers.store.market.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import io.swagger.annotations.Api;
@@ -9,11 +10,14 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pers.store.market.product.entity.AttrEntity;
 import pers.store.market.product.entity.AttrGroupEntity;
 import pers.store.market.product.service.AttrGroupService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.R;
+import pers.store.market.product.service.AttrService;
 import pers.store.market.product.service.CategoryService;
+import pers.store.market.product.vo.AttrRelationVo;
 
 
 /**
@@ -29,10 +33,20 @@ import pers.store.market.product.service.CategoryService;
 public class AttrGroupController {
 
     @Autowired
-    private AttrGroupService attrGroupService;
+    private AttrService attrService;
     @Autowired
-    private CategoryService CategoryService;
+    private CategoryService categoryService;
+    @Autowired
+    private AttrGroupService attrGroupService;
 
+
+    @GetMapping("/{attrGroupId}/attr/relation")
+    @ApiOperation(value = "获取属性分组的关联的所有属性")
+    @ApiImplicitParam(paramType = "path", name = "attrGroupId", dataType = "Long", required = true, value = "分组属性关联ID")
+    public R getAttrRelation(@PathVariable("attrGroupId") Long attrGroupId) {
+        List<AttrEntity> attrEntityList = attrService.getRelationAttr(attrGroupId);
+        return R.ok().put("data", attrEntityList);
+    }
 
     @GetMapping("/list")
     @ApiOperation(value = "分页查询列表")
@@ -43,7 +57,7 @@ public class AttrGroupController {
     }
 
     @GetMapping("/list/{categoryId}")
-    @ApiOperation(value = "分页查询列表")
+    @ApiOperation(value = "根据三级分类ID获取分类属性分组")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "params", dataType = "Map", required = true, value = "分页列表请求参数"),
             @ApiImplicitParam(paramType = "path", name = "categoryId", dataType = "Long", required = true, value = "三级分类ID")
@@ -59,7 +73,7 @@ public class AttrGroupController {
     @ApiImplicitParam(paramType = "path", name = "id", dataType = "Long", required = true, value = "ID")
     public R info(@PathVariable("attrGroupId") Long attrGroupId) {
         AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
-        Long[] path = CategoryService.findCategoryPath(attrGroup.getCatelogId());
+        Long[] path = categoryService.findCategoryPath(attrGroup.getCatelogId());
         attrGroup.setCategoryPath(path);
         return R.ok().put("attrGroup", attrGroup);
     }
@@ -91,4 +105,11 @@ public class AttrGroupController {
         return R.ok();
     }
 
+    @PostMapping("/attr/relation/delete")
+    @ApiOperation(value = "批量删除", notes = "批量删除属性与分组的关联关系")
+    @ApiImplicitParam(paramType = "body", name = "relationVos", dataType = "AttrRelationVo", allowMultiple = true, required = true, value = "参数数组")
+    public R delete(@RequestBody AttrRelationVo[] relationVos) {
+        attrGroupService.removeAttrRelation(relationVos);
+        return R.ok();
+    }
 }
