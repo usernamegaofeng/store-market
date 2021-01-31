@@ -3,16 +3,19 @@ package pers.store.market.product.controller;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pers.store.market.product.entity.BrandEntity;
 import pers.store.market.product.entity.CategoryBrandRelationEntity;
 import pers.store.market.product.service.CategoryBrandRelationService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.R;
+import pers.store.market.product.vo.BrandVo;
 
 
 /**
@@ -39,9 +42,23 @@ public class CategoryBrandRelationController {
         return R.ok().put("page", page);
     }
 
+    @GetMapping("/brand/list")
+    @ApiOperation(value = "获取分类关联的品牌")
+    @ApiImplicitParam(paramType = "query", name = "catId", dataType = "Long", required = true, value = "分类ID")
+    public R brandList(@RequestParam("catId") Long catId) {
+        List<BrandEntity> dataList = categoryBrandRelationService.getRelationBrandList(catId);
+        List<BrandVo> brandList = dataList.stream().map(item -> {
+            BrandVo brandVo = new BrandVo();
+            brandVo.setBrandId(item.getBrandId());
+            brandVo.setBrandName(item.getName());
+            return brandVo;
+        }).collect(Collectors.toList());
+        return R.ok().put("data", brandList);
+    }
+
     @GetMapping("/catelog/list")
-    @ApiOperation(value = "分页查询列表")
-    @ApiImplicitParam(paramType = "query", name = "params", dataType = "Map", required = true, value = "分页列表请求参数")
+    @ApiOperation(value = "根据品牌ID查询分类与手机关系")
+    @ApiImplicitParam(paramType = "query", name = "brandId", dataType = "Long", required = true, value = "品牌ID")
     public R categoryList(@RequestParam("brandId") Long brandId) {
         List<CategoryBrandRelationEntity> entityList = categoryBrandRelationService.queryCategoryList(brandId);
         return R.ok().put("data", entityList);

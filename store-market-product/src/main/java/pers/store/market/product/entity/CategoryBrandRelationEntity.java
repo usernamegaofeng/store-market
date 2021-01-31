@@ -25,10 +25,10 @@ import javax.validation.constraints.NotNull;
 public class CategoryBrandRelationEntity implements Serializable {
 
     /**
-     *
+     * ID
      */
     @TableId
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "ID")
     private Long id;
     /**
      * 品牌id
@@ -43,14 +43,14 @@ public class CategoryBrandRelationEntity implements Serializable {
     @NotNull
     private Long catelogId;
     /**
-     *
+     * 品牌名称
      */
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "品牌名称")
     private String brandName;
     /**
-     *
+     * 分类名称
      */
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "分类名称")
     private String catelogName;
 
 }

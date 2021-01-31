@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -62,21 +63,41 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         this.save(categoryBrandRelation);
     }
 
-    //数据同步
+    //冗余字段数据同步
     @Override
     public void updateBrand(Long brandId, String name) {
         CategoryBrandRelationEntity categoryBrandRelationEntity = new CategoryBrandRelationEntity();
         categoryBrandRelationEntity.setBrandId(brandId);
         categoryBrandRelationEntity.setBrandName(name);
-        this.update(categoryBrandRelationEntity,new UpdateWrapper<CategoryBrandRelationEntity>().eq("brand_id",brandId));
+        this.update(categoryBrandRelationEntity, new UpdateWrapper<CategoryBrandRelationEntity>().eq("brand_id", brandId));
     }
 
+    //冗余字段数据同步
     @Override
     public void updateCategory(Long catId, String name) {
         CategoryBrandRelationEntity categoryBrandRelationEntity = new CategoryBrandRelationEntity();
         categoryBrandRelationEntity.setCatelogId(catId);
         categoryBrandRelationEntity.setCatelogName(name);
-        this.update(categoryBrandRelationEntity,new UpdateWrapper<CategoryBrandRelationEntity>().eq("catelog_id",catId));
+        this.update(categoryBrandRelationEntity, new UpdateWrapper<CategoryBrandRelationEntity>().eq("catelog_id", catId));
+    }
+
+    /**
+     * 根据分类ID查询品牌
+     *
+     * @param catId 分类ID
+     * @return List<BrandEntity>
+     */
+    @Override
+    public List<BrandEntity> getRelationBrandList(Long catId) {
+        List<CategoryBrandRelationEntity> relationEntityList = this.baseMapper.selectList(new QueryWrapper<CategoryBrandRelationEntity>().eq("catelog_id", catId));
+        if (relationEntityList.size() > 0) {
+            List<BrandEntity> brandList = relationEntityList.stream().map(item -> {
+                BrandEntity brandEntity = brandDao.selectById(item.getBrandId());
+                return brandEntity;
+            }).collect(Collectors.toList());
+            return brandList;
+        }
+        return null;
     }
 
 }

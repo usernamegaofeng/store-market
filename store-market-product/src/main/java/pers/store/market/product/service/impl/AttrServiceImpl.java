@@ -217,6 +217,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
             List<AttrAttrgroupRelationEntity> groupList = attrAttrgroupRelationDao.selectList(new QueryWrapper<AttrAttrgroupRelationEntity>().in("attr_group_id", ids));
             //获取其他分组关联的所有属性
             List<Long> attrList = groupList.stream().map(AttrAttrgroupRelationEntity::getAttrId).collect(Collectors.toList());
+            //只查询当前所属分类下的属性,排除掉其他分组关联过的属性,就剩下当前分组所能关联的所有属性了
             QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<AttrEntity>().eq("catelog_id", categoryId).eq("attr_type", ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode());
             //从当前分组的属性中移除其他组所关联的属性
             if (attrList.size() > 0) {
