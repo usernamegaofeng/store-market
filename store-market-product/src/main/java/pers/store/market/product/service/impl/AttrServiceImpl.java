@@ -182,7 +182,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     }
 
     /**
-     * 获取属性分组的关联的所有属性
+     * 获取属性分组关联的所有属性
      *
      * @param attrGroupId 属性分组ID
      * @return List<AttrEntity>

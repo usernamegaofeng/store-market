@@ -18,9 +18,12 @@ import pers.store.market.common.utils.Query;
 import pers.store.market.product.dao.AttrAttrgroupRelationDao;
 import pers.store.market.product.dao.AttrGroupDao;
 import pers.store.market.product.entity.AttrAttrgroupRelationEntity;
+import pers.store.market.product.entity.AttrEntity;
 import pers.store.market.product.entity.AttrGroupEntity;
 import pers.store.market.product.service.AttrGroupService;
+import pers.store.market.product.service.AttrService;
 import pers.store.market.product.vo.AttrRelationVo;
+import pers.store.market.product.vo.AttrsGroupVo;
 
 
 @Service("attrGroupService")
@@ -28,6 +31,8 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     private final int DEFAULT_ZERO = 0; //查询全部数据
 
+    @Autowired
+    private AttrService attrService;
     @Autowired
     private AttrAttrgroupRelationDao attrAttrgroupRelationDao;
 
@@ -77,5 +82,29 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             return attrAttrgroupRelationEntity;
         }).collect(Collectors.toList());
         attrAttrgroupRelationDao.removeBatchAttrRelation(relationEntityList);
+    }
+
+    /**
+     * 获取当前分类下的所有分组和分类属性
+     *
+     * @param categoryId 分类ID
+     * @return List<AttrsGroupVo>
+     */
+    @Override
+    public List<AttrsGroupVo> getAttrGroupWithAttrs(Long categoryId) {
+        //查询当前分类下的所有属性分组
+        List<AttrGroupEntity> groupEntities = this.baseMapper.selectList(new QueryWrapper<AttrGroupEntity>().eq("catelog_id", categoryId));
+        if (groupEntities.isEmpty()) {
+            //TODO 抛自定义异常,集中处理
+            throw new RuntimeException("list is null");
+        }
+        List<AttrsGroupVo> dataList = groupEntities.stream().map(item -> {
+            AttrsGroupVo attrsGroupVo = new AttrsGroupVo();
+            BeanUtils.copyProperties(item, attrsGroupVo);
+            List<AttrEntity> attrEntityList = attrService.getRelationAttr(item.getAttrGroupId());
+            attrsGroupVo.setAttrs(attrEntityList);
+            return attrsGroupVo;
+        }).collect(Collectors.toList());
+        return dataList;
     }
 }

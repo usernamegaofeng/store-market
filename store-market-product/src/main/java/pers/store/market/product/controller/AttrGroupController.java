@@ -19,6 +19,7 @@ import pers.store.market.common.utils.R;
 import pers.store.market.product.service.AttrService;
 import pers.store.market.product.service.CategoryService;
 import pers.store.market.product.vo.AttrRelationVo;
+import pers.store.market.product.vo.AttrsGroupVo;
 
 
 /**
@@ -60,6 +61,16 @@ public class AttrGroupController {
     public R getNoAttrRelation(@PathVariable("attrGroupId") Long attrGroupId, @RequestParam Map<String, Object> params) {
         PageUtils page = attrService.getNoRelationAttr(attrGroupId, params);
         return R.ok().put("page", page);
+    }
+
+    @GetMapping("/{categoryId}/withattr")
+    @ApiOperation(value = "获取当前分类下的所有分组和分类属性")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", name = "categoryId", dataType = "Long", required = true, value = "分类ID")
+    })
+    public R getAttrGroupWithAttrs(@PathVariable("categoryId") Long categoryId) {
+        List<AttrsGroupVo> dataList = attrGroupService.getAttrGroupWithAttrs(categoryId);
+        return R.ok().put("data", dataList);
     }
 
     @GetMapping("/list")
