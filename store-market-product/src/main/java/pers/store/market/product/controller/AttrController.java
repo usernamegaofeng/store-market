@@ -1,6 +1,7 @@
 package pers.store.market.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import io.swagger.annotations.Api;
@@ -10,9 +11,11 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pers.store.market.product.entity.AttrEntity;
+import pers.store.market.product.entity.ProductAttrValueEntity;
 import pers.store.market.product.service.AttrService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.R;
+import pers.store.market.product.service.ProductAttrValueService;
 import pers.store.market.product.vo.AttrVo;
 
 
@@ -30,6 +33,16 @@ public class AttrController {
 
     @Autowired
     private AttrService attrService;
+    @Autowired
+    private ProductAttrValueService productAttrValueService;
+
+    @GetMapping("/base/listforspu/{spuId}")
+    @ApiOperation(value = "查询spu的所有规格属性")
+    @ApiImplicitParam(paramType = "path", name = "spuId", dataType = "Long", required = true, value = "spuId")
+    public R baseAttrListForSpu(@PathVariable("spuId") Long spuId) {
+        List<ProductAttrValueEntity> productAttrValueEntityList = productAttrValueService.baseAttrListForSpu(spuId);
+        return R.ok().put("data", productAttrValueEntityList);
+    }
 
 
     @GetMapping("/{attrType}/list/{categoryId}")
@@ -39,7 +52,7 @@ public class AttrController {
             @ApiImplicitParam(paramType = "path", name = "categoryId", dataType = "Long", required = true, value = "分类ID")}
     )
     public R list(@RequestParam Map<String, Object> params, @PathVariable("attrType") String type, @PathVariable("categoryId") Long categoryId) {
-        PageUtils page = attrService.queryBasePage(params, categoryId,type);
+        PageUtils page = attrService.queryBasePage(params, categoryId, type);
         return R.ok().put("page", page);
     }
 
@@ -70,6 +83,12 @@ public class AttrController {
         return R.ok();
     }
 
+    @PostMapping("/update/{spuId}")
+    @ApiOperation(value = "更新spu规格")
+    public R updateSpuAttr(@PathVariable("spuId") Long spuId, @RequestBody List<ProductAttrValueEntity> list) {
+        productAttrValueService.updateSpuAttr(spuId, list);
+        return R.ok();
+    }
 
     @PostMapping("/delete")
     @ApiOperation(value = "批量删除", notes = "根据id集合集来批量删除对象")
