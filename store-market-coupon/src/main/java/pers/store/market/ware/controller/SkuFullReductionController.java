@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pers.store.market.common.dto.SkuReductionDto;
 import pers.store.market.ware.entity.SkuFullReductionEntity;
 import pers.store.market.ware.service.SkuFullReductionService;
 import pers.store.market.common.utils.PageUtils;
@@ -23,7 +24,7 @@ import pers.store.market.common.utils.R;
  */
 @Api(tags = "商品满减信息接口")
 @RestController
-@RequestMapping("ware/skufullReduction")
+@RequestMapping("ware/skuFullReduction")
 public class SkuFullReductionController {
 
     @Autowired
@@ -53,6 +54,14 @@ public class SkuFullReductionController {
     @ApiImplicitParam(paramType = "body", name = "skuFullReduction", dataType = "SkuFullReductionEntity", required = true, value = "实体类")
     public R save(@RequestBody SkuFullReductionEntity skuFullReduction) {
         skuFullReductionService.save(skuFullReduction);
+        return R.ok();
+    }
+
+    @PostMapping("/saveInfo")
+    @ApiOperation(value = "保存满减信息")
+    @ApiImplicitParam(paramType = "body", name = "skuReductionDto", dataType = "SkuReductionDto", required = true, value = "sku满减信息实体类")
+    public R saveInfo(@RequestBody SkuReductionDto skuReductionDto) {
+        skuFullReductionService.saveInfo(skuReductionDto);
         return R.ok();
     }
 

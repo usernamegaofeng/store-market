@@ -1,4 +1,4 @@
-package pers.store.market.common.to;
+package pers.store.market.common.dto;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-public class SkuReductionTo {
+public class SkuReductionDto {
 
     private Long skuId;
     private int fullCount;

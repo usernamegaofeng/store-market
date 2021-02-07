@@ -1,5 +1,6 @@
 package pers.store.market.product.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -25,7 +26,7 @@ public class SpuInfoDescEntity implements Serializable {
     /**
      * 商品id
      */
-    @TableId
+    @TableId(type = IdType.INPUT)   //手动设置输入ID,不是自动增长的ID
     @ApiModelProperty(value = "商品id")
     private Long spuId;
     /**

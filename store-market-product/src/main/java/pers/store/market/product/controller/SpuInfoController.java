@@ -12,6 +12,7 @@ import pers.store.market.product.entity.SpuInfoEntity;
 import pers.store.market.product.service.SpuInfoService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.R;
+import pers.store.market.product.vo.SpuSaveVo;
 
 
 /**
@@ -49,10 +50,10 @@ public class SpuInfoController {
 
 
     @PostMapping("/save")
-    @ApiOperation(value = "保存操作")
-    @ApiImplicitParam(paramType = "body", name = "spuInfo", dataType = "SpuInfoEntity", required = true, value = "实体类")
-    public R save(@RequestBody SpuInfoEntity spuInfo) {
-        spuInfoService.save(spuInfo);
+    @ApiOperation(value = "保存spu")
+    @ApiImplicitParam(paramType = "body", name = "vo", dataType = "SpuSaveVo", required = true, value = "实体类")
+    public R save(@RequestBody SpuSaveVo vo) {
+        spuInfoService.saveSpuInfo(vo);
         return R.ok();
     }
 
