@@ -15,6 +15,10 @@ spring:
         server-addr:  47.97.69.141:8848
         namespace: c8bceb9e-4b19-446e-a836-8bcb843871be
 
+  # 模板引擎
+  thymeleaf:
+    cache: false
+
 # mybatis plus配置
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml

@@ -18,6 +18,7 @@ import pers.store.market.product.dao.CategoryDao;
 import pers.store.market.product.entity.CategoryEntity;
 import pers.store.market.product.service.CategoryBrandRelationService;
 import pers.store.market.product.service.CategoryService;
+import pers.store.market.product.vo.CategoryLevel2Vo;
 
 @Slf4j
 @Service("categoryService")
@@ -120,7 +121,56 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     public void updateDetail(CategoryEntity category) {
         this.updateById(category);
         if (StringUtils.isNotBlank(category.getName())) {
-            categoryBrandRelationService.updateCategory(category.getCatId(),category.getName());
+            categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
         }
     }
+
+    /**
+     * 获取所有一级分类
+     *
+     * @return List<CategoryEntity>
+     */
+    @Override
+    public List<CategoryEntity> getCategoryLevelToOne() {
+        return this.baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", 0));
+    }
+
+    /**
+     * 获取分类首页分类列表
+     *
+     * @return Map<String, List < CategoryLevel2Vo>>
+     */
+    @Override
+    public Map<String, List<CategoryLevel2Vo>> getCategoryJson() {
+        //查询所有一级分类
+        List<CategoryEntity> categoryOneList = getCategoryLevelToOne();
+        //查询二级分类
+        return categoryOneList.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+            //查询一级分类下的二级分类
+            List<CategoryEntity> categoryTwoList = this.baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", v.getCatId()));
+            List<CategoryLevel2Vo> categoryLevel2VoList = null;
+            if (categoryTwoList != null) {
+                categoryLevel2VoList = categoryTwoList.stream().map(two -> {
+                    //封装数据
+                    CategoryLevel2Vo categoryLevel2Vo = new CategoryLevel2Vo(two.getCatId().toString(), two.getName(), v.getCatId().toString(), null);
+                    //三级分类列表
+                    List<CategoryEntity> categoryThreeList = this.baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", two.getCatId()));
+                    List<CategoryLevel2Vo.CategoryLevel3Vo> collect = null;
+                    if (categoryThreeList != null) {
+                        collect = categoryThreeList.stream().map(three -> {
+                            CategoryLevel2Vo.CategoryLevel3Vo categoryLevel3Vo = new CategoryLevel2Vo.CategoryLevel3Vo();
+                            categoryLevel3Vo.setId(three.getCatId().toString());
+                            categoryLevel3Vo.setName(three.getName());
+                            categoryLevel3Vo.setCatalog2Id(two.getCatId().toString());
+                            return categoryLevel3Vo;
+                        }).collect(Collectors.toList());
+                    }
+                    categoryLevel2Vo.setCatalog3List(collect);
+                    return categoryLevel2Vo;
+                }).collect(Collectors.toList());
+            }
+            return categoryLevel2VoList;
+        }));
+    }
+
 }
