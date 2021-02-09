@@ -1,51 +1,64 @@
 package pers.store.market.product.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import pers.store.market.common.dto.SkuReductionDto;
-import pers.store.market.common.dto.SpuBoundDto;
+import pers.store.market.common.constant.ProductConstant;
+import pers.store.market.common.domain.dto.SkuReductionDto;
+import pers.store.market.common.domain.dto.SpuBoundDto;
+import pers.store.market.common.domain.model.SkuEsModel;
+import pers.store.market.common.domain.vo.SkuHasStockVo;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.Query;
 import pers.store.market.common.utils.R;
 import pers.store.market.product.dao.SpuInfoDao;
 import pers.store.market.product.entity.*;
 import pers.store.market.product.feign.CouponFeignService;
+import pers.store.market.product.feign.SearchFeignService;
+import pers.store.market.product.feign.WareFeignService;
 import pers.store.market.product.service.*;
 import pers.store.market.product.vo.*;
 
-
+@Slf4j
 @Service("spuInfoService")
 public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> implements SpuInfoService {
 
     @Autowired
-    AttrService attrService;
+    private AttrService attrService;
     @Autowired
-    SkuInfoService skuInfoService;
+    private BrandService brandService;
     @Autowired
-    SpuImagesService imagesService;
+    private SkuInfoService skuInfoService;
     @Autowired
-    SkuImagesService skuImagesService;
+    private SpuImagesService imagesService;
     @Autowired
-    SpuInfoDescService spuInfoDescService;
+    private CategoryService categoryService;
     @Autowired
-    CouponFeignService couponFeignService;
+    private SkuImagesService skuImagesService;
     @Autowired
-    ProductAttrValueService attrValueService;
+    private WareFeignService wareFeignService;
     @Autowired
-    SkuSaleAttrValueService skuSaleAttrValueService;
+    private SearchFeignService searchFeignService;
+    @Autowired
+    private SpuInfoDescService spuInfoDescService;
+    @Autowired
+    private CouponFeignService couponFeignService;
+    @Autowired
+    private ProductAttrValueService attrValueService;
+    @Autowired
+    private SkuSaleAttrValueService skuSaleAttrValueService;
+
 
     /**
      * 条件查询
@@ -76,8 +89,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         if (!StringUtils.isEmpty(catelogId) && !"0".equalsIgnoreCase(catelogId)) {
             wrapper.eq("catalog_id", catelogId);
         }
-        IPage<SpuInfoEntity> page = this.page(
-                new Query<SpuInfoEntity>().getPage(params), wrapper);
+        IPage<SpuInfoEntity> page = this.page(new Query<SpuInfoEntity>().getPage(params), wrapper);
         return new PageUtils(page);
 
     }
@@ -150,6 +162,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 skuInfoEntity.setSaleCount(0L);
                 skuInfoEntity.setSpuId(infoEntity.getId());
                 skuInfoEntity.setSkuDefaultImg(defaultImg);
+                skuInfoEntity.setSkuDesc(infoEntity.getSpuName());
                 //5.1）、sku的基本信息；pms_sku_info
                 skuInfoService.saveSkuInfo(skuInfoEntity);
                 //skuId
@@ -177,11 +190,11 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 skuSaleAttrValueService.saveBatch(skuSaleAttrValueEntities);
 
                 //5.4）、sku的优惠、满减等信息,sms_sku_ladder\sms_sku_full_reduction\sms_member_price
-                SkuReductionDto skuReductionTo = new SkuReductionDto();
-                BeanUtils.copyProperties(item, skuReductionTo);
-                skuReductionTo.setSkuId(skuId);
-                if (skuReductionTo.getFullCount() > 0 || skuReductionTo.getFullPrice().compareTo(new BigDecimal("0")) == 1) {
-                    R r1 = couponFeignService.saveSkuReduction(skuReductionTo);
+                SkuReductionDto skuReductionDto = new SkuReductionDto();
+                BeanUtils.copyProperties(item, skuReductionDto);
+                skuReductionDto.setSkuId(skuId);
+                if (skuReductionDto.getFullCount() > 0 || skuReductionDto.getFullPrice().compareTo(new BigDecimal("0")) == 1) {
+                    R r1 = couponFeignService.saveSkuReduction(skuReductionDto);
                     if (r1.getCode() != 0) {
                         log.error("远程保存sku优惠信息失败");
                     }
@@ -193,6 +206,73 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     @Override
     public void saveBaseSpuInfo(SpuInfoEntity infoEntity) {
         this.baseMapper.insert(infoEntity);
+    }
+
+    /**
+     * 商品上架
+     *
+     * @param spuId spuId
+     */
+    @Transactional
+    @Override
+    public void up(Long spuId) {
+        //查询当前spu对应的所有sku集合
+        List<SkuInfoEntity> skuInfoEntityList = skuInfoService.list(new QueryWrapper<SkuInfoEntity>().eq("spu_id", spuId));
+        ////查询当前spu的所有可以被检索的属性
+        List<ProductAttrValueEntity> productAttrValueEntityList = attrValueService.baseAttrListForSpu(spuId);
+        List<Long> attrIds = productAttrValueEntityList.stream().map(ProductAttrValueEntity::getAttrId).collect(Collectors.toList());
+        //可以被检索的属性
+        List<Long> searchAttrIds = attrService.getSearchAttrs(attrIds);
+        Set<Long> set = new HashSet<Long>(searchAttrIds);
+        //过滤掉不能被检索的ProductAttrValueEntity
+        List<SkuEsModel.Attrs> attrsList = productAttrValueEntityList.stream().filter(item -> set.contains(item.getAttrId())).map(item -> {
+            SkuEsModel.Attrs attrs = new SkuEsModel.Attrs();
+            BeanUtils.copyProperties(item, attrs);
+            return attrs;
+        }).collect(Collectors.toList());
+
+        //调用feign接口查询sku是否有库存
+        List<Long> skuIds = skuInfoEntityList.stream().map(SkuInfoEntity::getSkuId).collect(Collectors.toList());
+        //转换成map
+        Map<Long, Boolean> dataMap = null;
+        try {
+            List<SkuHasStockVo> skuHasStockVos = wareFeignService.hasStock(skuIds);
+            dataMap = skuHasStockVos.stream().collect(Collectors.toMap(SkuHasStockVo::getSkuId, SkuHasStockVo::getHasStock));
+        } catch (Exception e) {
+            log.error("调用wareFeignService接口失败,错误原因 ===>{}", e.getMessage());
+        }
+
+        //封装SkuEsModel对象
+        Map<Long, Boolean> finalDataMap = dataMap;
+        List<SkuEsModel> modelList = skuInfoEntityList.stream().map(item -> {
+            SkuEsModel skuEsModel = new SkuEsModel();
+            BeanUtils.copyProperties(item, skuEsModel);
+            //封装字段
+            skuEsModel.setSkuPrice(item.getPrice());
+            skuEsModel.setSkuImg(item.getSkuDefaultImg());
+            skuEsModel.setHotScore(0L);  //热度评分暂时设置为0
+            skuEsModel.setHasStock(finalDataMap.get(item.getSkuId())); //是否有库存
+            //查询品牌和分类的名称
+            BrandEntity brandEntity = brandService.getById(item.getBrandId());
+            CategoryEntity categoryEntity = categoryService.getById(item.getCatalogId());
+            skuEsModel.setBrandName(brandEntity.getName());
+            skuEsModel.setBrandImg(brandEntity.getLogo());
+            skuEsModel.setCatalogName(categoryEntity.getName());
+            skuEsModel.setAttrs(attrsList);
+            return skuEsModel;
+        }).collect(Collectors.toList());
+
+        //调用搜索服务进行索引保存
+        try {
+            R result = searchFeignService.saveIndex(modelList);
+            if (result.getCode() == 0) {
+                //修改发布状态
+                baseMapper.updateSpuStatus(spuId, ProductConstant.StatusEnum.UP.getCode());
+            }
+        } catch (Exception e) {
+            log.error("调用searchFeignService失败,错误原因 ===> {}", e.getMessage());
+        }
+
     }
 
 

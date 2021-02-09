@@ -56,4 +56,5 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
         }).collect(Collectors.toList());
         this.saveBatch(collect);
     }
+
 }

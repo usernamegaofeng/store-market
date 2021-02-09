@@ -31,6 +31,15 @@ public class SpuInfoController {
     private SpuInfoService spuInfoService;
 
 
+    @PostMapping("/{spuId}/up")
+    @ApiOperation(value = "商品上架")
+    @ApiImplicitParam(paramType = "path", name = "spuId", dataType = "Long", required = true, value = "spuId")
+    public R up(@PathVariable("spuId") Long spuId) {
+        spuInfoService.up(spuId);
+        return R.ok();
+    }
+
+
     @GetMapping("/list")
     @ApiOperation(value = "分页查询列表")
     @ApiImplicitParam(paramType = "query", name = "params", dataType = "Map", required = true, value = "分页列表请求参数")

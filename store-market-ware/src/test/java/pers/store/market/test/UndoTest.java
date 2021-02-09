@@ -5,9 +5,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import pers.store.market.ware.WareServiceApplication;
-import pers.store.market.ware.entity.UndoLogEntity;
-import pers.store.market.ware.service.UndoLogService;
+import pers.store.market.coupon.WareServiceApplication;
+import pers.store.market.coupon.entity.UndoLogEntity;
+import pers.store.market.coupon.service.UndoLogService;
 
 
 /**

@@ -43,7 +43,7 @@ public class OssController {
     public R policy() {
 
         String host = "https://" + bucket + "." + endpoint; //host的格式为 bucketname.endpoint
-        String dir = new SimpleDateFormat("yyyy-MM-dd").format(new Date()); //以年月日的名称为用户上传文件时指定的前缀。
+        String dir = new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "/"; //以年月日的名称为用户上传文件时指定的前缀。
 
         Map<String, String> respMap = null;
         try {

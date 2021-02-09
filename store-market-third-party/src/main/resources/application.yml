@@ -4,8 +4,8 @@ server:
 spring:
   cloud:
     alicloud:
-      access-key: U2FsdGVkX19x5eZEl/3/Yqhx4rv5qwoEIIEBEhAN4wFRyp5r9jP22TZ0baqs8myD
-      secret-key: U2FsdGVkX19C24dJzpAANwM5ktYdRlvQCVjSqcdIUIS7gomctq3mJow0TUOj3REM
+      access-key: LTAI4G2TkFoXWsbUAJc79eDJ
+      secret-key: 5eee6MsTUUkRObkHZxLhOT8HEz5iPv
       oss:
         endpoint: oss-cn-hangzhou.aliyuncs.com
         bucket: 2021-test

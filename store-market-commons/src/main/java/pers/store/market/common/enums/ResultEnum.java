@@ -25,7 +25,8 @@ public enum ResultEnum {
     CREATE_FAILED(10002, "保存失败"),
     UPDATE_FAILED(10003, "更新失败"),
     DELETE_FAILED(10004, "删除失败"),
-    QUERY_FAILED(10005, "查询失败");
+    QUERY_FAILED(10005, "查询失败"),
+    PRODUCT_UP_ERROR(11000, "上架失败");
 
     private int code;
     private String msg;

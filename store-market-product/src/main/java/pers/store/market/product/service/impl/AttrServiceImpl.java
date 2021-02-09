@@ -232,4 +232,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         }
         return null;
     }
+
+    @Override
+    public List<Long> getSearchAttrs(List<Long> attrIds) {
+        return baseMapper.selectSearchAttrIdsByIds(attrIds);
+    }
 }

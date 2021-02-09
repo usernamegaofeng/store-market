@@ -3,8 +3,8 @@ package pers.store.market.product.feign;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import pers.store.market.common.dto.SkuReductionDto;
-import pers.store.market.common.dto.SpuBoundDto;
+import pers.store.market.common.domain.dto.SkuReductionDto;
+import pers.store.market.common.domain.dto.SpuBoundDto;
 import pers.store.market.common.utils.R;
 
 /**
