@@ -29,11 +29,9 @@ public class IndexController {
         model.addAttribute("category", dataList);
         return "index";
     }
-    //http://192.168.5.9:9300/index/json/catelog.json
-    //http://192.168.5.9:9300/index/json/catalog.json
 
     @ResponseBody
-    @GetMapping("/index/json/catalog.json")
+    @GetMapping("/index/catalog.json")
     public Map<String, List<CategoryLevel2Vo>> getCategoryJson() {
         Map<String, List<CategoryLevel2Vo>> categoryJson = categoryService.getCategoryJson();
         return categoryJson;
