@@ -18,7 +18,7 @@ import java.util.Map;
  * @description: 首页跳转控制器
  */
 @Controller
-public class IndexController {
+public class IndexPageController {
 
     @Autowired
     private CategoryService categoryService;
