@@ -28,8 +28,8 @@ mybatis-plus:
       id-type: auto   #id策略自增长,可以使用zookeeper生成主键ID
     #原生配置
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #测试开发阶段开启SQL日志输出
     map-underscore-to-camel-case: true
-    cache-enabled: false
+    cache-enabled: true
     call-setters-on-nulls: true
     jdbc-type-for-null: 'null'
