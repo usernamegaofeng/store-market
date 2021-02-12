@@ -13,13 +13,14 @@ spring:
     host: 47.97.69.141
     port: 6379
     password: 12345
-#    timeout: 6000ms    # 连接超时时长（毫秒）
-#    jedis:
-#      pool:
-#        max-active: 1000   # 连接池最大连接数（使用负值表示没有限制）
-#        max-wait: -1ms    # 连接池最大阻塞等待时间（使用负值表示没有限制）
-#        max-idle: 10     # 连接池中的最大空闲连接
-#        min-idle: 5     # 连接池中的最小空闲连接
+    timeout: 6000ms    # 连接超时时长（毫秒）
+    jedis:
+      pool:
+        max-active: 1000   # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1ms    # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10     # 连接池中的最大空闲连接
+        min-idle: 5     # 连接池中的最小空闲连接
+
 
   # 服务注册
   cloud:
@@ -31,6 +32,15 @@ spring:
   # 模板引擎
   thymeleaf:
     cache: false
+  # spring cache配置
+  cache:
+    redis:
+      time-to-live: 3600000 #毫秒为单位
+      use-key-prefix: false #如果指定了前缀就用我们指定的前缀，如果没有就默认使用缓存的名字作为前缀
+      cache-null-values: true #是否缓存空值，防止缓存穿透
+    type: redis
+
+
 
 # mybatis plus配置
 mybatis-plus:

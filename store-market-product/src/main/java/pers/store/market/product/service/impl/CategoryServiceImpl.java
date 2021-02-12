@@ -8,7 +8,8 @@ import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,7 +26,6 @@ import pers.store.market.product.entity.CategoryEntity;
 import pers.store.market.product.service.CategoryBrandRelationService;
 import pers.store.market.product.service.CategoryService;
 import pers.store.market.product.vo.CategoryLevel2Vo;
-import springfox.documentation.spring.web.json.Json;
 
 @Slf4j
 @Service("categoryService")
@@ -33,8 +33,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Autowired
     private RedissonClient redissonClient;
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
     @Autowired
     private CategoryBrandRelationService categoryBrandRelationService;
 
@@ -127,6 +125,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      *
      * @param category 分类实体
      */
+    @CacheEvict(value = "category", allEntries = true)
     @Override
     @Transactional
     public void updateDetail(CategoryEntity category) {
@@ -141,6 +140,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      *
      * @return List<CategoryEntity>
      */
+    @Cacheable(value = "category", key = "#root.methodName", sync = true)
     @Override
     public List<CategoryEntity> getCategoryLevelToOne() {
         return this.baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", 0));
@@ -148,59 +148,64 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     /**
      * 获取分类首页分类列表
+     * <p>
      *
      * @return Map<String, List < CategoryLevel2Vo>>
+     * @CacheEvict:失效模式
+     * @CachePut:双写模式，需要有返回值
+     * 1、同时进行多种缓存操作：@Caching()
+     * 2、指定删除某个分区下的所有数据 @CacheEvict(value = "category",allEntries = true)
+     * 3、存储同一类型的数据，都可以指定为同一分区
+     * @Caching(evict = {
+     *   @CacheEvict(value = "category",key = "'getCategoryLevelToOne'"),
+     *   @CacheEvict(value = "category",key = "'getCatalogJson'")
+     * })
      */
+    @Cacheable(value = "category", key = "#root.methodName")
     @Override
     public Map<String, List<CategoryLevel2Vo>> getCategoryJson() {
-        RReadWriteLock readWriteLock = redissonClient.getReadWriteLock("categoryJson-lock");
+        //分布式锁
+        //RReadWriteLock readWriteLock = redissonClient.getReadWriteLock("categoryJson-lock");
         //使用读锁
-        RLock rLock = readWriteLock.readLock();
+        //RLock rLock = readWriteLock.readLock();
         Map<String, List<CategoryLevel2Vo>> dataMap = null;
         try {
-            rLock.lock();
-            String categoryJson = stringRedisTemplate.opsForValue().get("categoryJson");
-            if (StringUtils.isBlank(categoryJson)) {
-                System.out.println("查询了缓存............");
-                //查询所有一级分类
-                List<CategoryEntity> categoryOneList = getCategoryLevelToOne();
-                //查询二级分类
-                dataMap = categoryOneList.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
-                    //查询一级分类下的二级分类
-                    List<CategoryEntity> categoryTwoList = this.baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", v.getCatId()));
-                    List<CategoryLevel2Vo> categoryLevel2VoList = null;
-                    if (categoryTwoList != null) {
-                        categoryLevel2VoList = categoryTwoList.stream().map(two -> {
-                            //封装数据
-                            CategoryLevel2Vo categoryLevel2Vo = new CategoryLevel2Vo(two.getCatId().toString(), two.getName(), v.getCatId().toString(), null);
-                            //三级分类列表
-                            List<CategoryEntity> categoryThreeList = this.baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", two.getCatId()));
-                            List<CategoryLevel2Vo.CategoryLevel3Vo> collect = null;
-                            if (categoryThreeList != null) {
-                                collect = categoryThreeList.stream().map(three -> {
-                                    CategoryLevel2Vo.CategoryLevel3Vo categoryLevel3Vo = new CategoryLevel2Vo.CategoryLevel3Vo();
-                                    categoryLevel3Vo.setId(three.getCatId().toString());
-                                    categoryLevel3Vo.setName(three.getName());
-                                    categoryLevel3Vo.setCatalog2Id(two.getCatId().toString());
-                                    return categoryLevel3Vo;
-                                }).collect(Collectors.toList());
-                            }
-                            categoryLevel2Vo.setCatalog3List(collect);
-                            return categoryLevel2Vo;
-                        }).collect(Collectors.toList());
-                    }
-                    return categoryLevel2VoList;
-                }));
-                stringRedisTemplate.opsForValue().set("categoryJson", JSON.toJSONString(dataMap));
-                return dataMap;
-            }
-            Map<String, List<CategoryLevel2Vo>> result = JSON.parseObject(categoryJson, new TypeReference<Map<String, List<CategoryLevel2Vo>>>() {
-            });
-            return result;
+            //rLock.lock();
+            System.out.println("查询了缓存............");
+            //查询所有一级分类
+            List<CategoryEntity> categoryOneList = getCategoryLevelToOne();
+            //查询二级分类
+            dataMap = categoryOneList.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+                //查询一级分类下的二级分类
+                List<CategoryEntity> categoryTwoList = this.baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", v.getCatId()));
+                List<CategoryLevel2Vo> categoryLevel2VoList = null;
+                if (categoryTwoList != null) {
+                    categoryLevel2VoList = categoryTwoList.stream().map(two -> {
+                        //封装数据
+                        CategoryLevel2Vo categoryLevel2Vo = new CategoryLevel2Vo(two.getCatId().toString(), two.getName(), v.getCatId().toString(), null);
+                        //三级分类列表
+                        List<CategoryEntity> categoryThreeList = this.baseMapper.selectList(new QueryWrapper<CategoryEntity>().eq("parent_cid", two.getCatId()));
+                        List<CategoryLevel2Vo.CategoryLevel3Vo> collect = null;
+                        if (categoryThreeList != null) {
+                            collect = categoryThreeList.stream().map(three -> {
+                                CategoryLevel2Vo.CategoryLevel3Vo categoryLevel3Vo = new CategoryLevel2Vo.CategoryLevel3Vo();
+                                categoryLevel3Vo.setId(three.getCatId().toString());
+                                categoryLevel3Vo.setName(three.getName());
+                                categoryLevel3Vo.setCatalog2Id(two.getCatId().toString());
+                                return categoryLevel3Vo;
+                            }).collect(Collectors.toList());
+                        }
+                        categoryLevel2Vo.setCatalog3List(collect);
+                        return categoryLevel2Vo;
+                    }).collect(Collectors.toList());
+                }
+                return categoryLevel2VoList;
+            }));
+            return dataMap;
         } catch (Exception e) {
             log.error(e.getMessage());
         } finally {
-            rLock.unlock();
+            //rLock.unlock();
         }
         return null;
     }
