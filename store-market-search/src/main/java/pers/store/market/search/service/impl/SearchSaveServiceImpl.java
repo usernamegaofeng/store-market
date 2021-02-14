@@ -30,7 +30,7 @@ public class SearchSaveServiceImpl implements SearchSaveService {
     private RestHighLevelClient restHighLevelClient;
 
     /**
-     * 保存索引
+     * 保存数据到索引库
      *
      * @param skuEsModelList 数据集合
      */
@@ -49,6 +49,5 @@ public class SearchSaveServiceImpl implements SearchSaveService {
         BulkResponse bulk = restHighLevelClient.bulk(bulkRequest, ElasticSearchConfig.COMMON_OPTIONS);
         //todo 批量错误需手动处理
         return bulk.hasFailures();
-
     }
 }

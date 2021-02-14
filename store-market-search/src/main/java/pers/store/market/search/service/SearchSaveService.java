@@ -1,6 +1,8 @@
 package pers.store.market.search.service;
 
 import pers.store.market.common.domain.model.SkuEsModel;
+import pers.store.market.search.vo.SearchParam;
+import pers.store.market.search.vo.SearchResult;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,4 +15,5 @@ import java.util.List;
 public interface SearchSaveService {
 
     boolean saveIndex(List<SkuEsModel> skuEsModelList) throws IOException;
+
 }
