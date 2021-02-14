@@ -8,7 +8,7 @@ package pers.store.market.search.constant;
 public class ElasticSearchIndexConstant {
 
     //商品在es中的索引
-    public static final String PRODUCT_INDEX = "product";
+    public static final String PRODUCT_INDEX = "store_product";
 
     public static final Integer PRODUCT_PAGE_SIZE = 16;
 }
