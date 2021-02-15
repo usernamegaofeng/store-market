@@ -26,13 +26,18 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pers.store.market.common.domain.model.SkuEsModel;
+import pers.store.market.common.domain.vo.AttrVo;
+import pers.store.market.common.utils.R;
 import pers.store.market.search.config.ElasticSearchConfig;
 import pers.store.market.search.constant.ElasticSearchIndexConstant;
+import pers.store.market.search.feign.ProductFeignService;
 import pers.store.market.search.service.SearchService;
 import pers.store.market.search.vo.SearchParam;
 import pers.store.market.search.vo.SearchResult;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +51,8 @@ import java.util.stream.Collectors;
 @Service
 public class SearchServiceImpl implements SearchService {
 
+    @Autowired
+    private ProductFeignService productFeignService;
     @Autowired
     private RestHighLevelClient restHighLevelClient;
 
@@ -261,6 +268,42 @@ public class SearchServiceImpl implements SearchService {
         //计算总页数
         int totalPages = (int) total / ElasticSearchIndexConstant.PRODUCT_PAGE_SIZE == 0 ? (int) total / ElasticSearchIndexConstant.PRODUCT_PAGE_SIZE : ((int) total / ElasticSearchIndexConstant.PRODUCT_PAGE_SIZE) + 1;
         result.setTotalPages(totalPages);
+        //分页页码集合
+        List<Integer> pageNavs = new ArrayList<>();
+        for (int i = 1; i <= totalPages; i++) {
+            pageNavs.add(i);
+        }
+        result.setPageNavs(pageNavs);
+
+        //构建面包屑导航
+        if (searchParam.getAttrs() != null && searchParam.getAttrs().size() > 0) {
+            List<SearchResult.NavVo> collect = searchParam.getAttrs().stream().map(attr -> {
+                //1、分析每一个attrs传过来的参数值
+                SearchResult.NavVo navVo = new SearchResult.NavVo();
+                String[] s = attr.split("_");
+                navVo.setNavValue(s[1]);
+                R r = productFeignService.attrInfo(Long.parseLong(s[0]));
+                if (r.getCode() == 0) {
+                    AttrVo data = (AttrVo) r.get("attr");
+                    navVo.setNavName(data.getAttrName());
+                } else {
+                    navVo.setNavName(s[0]);
+                }
+                //如果取消了这个面包屑以后，我们要跳转到哪个地方，将请求的地址url里面的当前置空
+                //拿到所有的查询条件，去掉当前的属性条件
+                String encode = null;
+                try {
+                    encode = URLEncoder.encode(attr, "UTF-8");
+                    encode.replace("+", "%20");  //浏览器对空格的编码和Java不一样，差异化处理
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                String replace = searchParam.get_queryString().replace("&attrs=" + attr, "");
+                navVo.setLink("http://localhost:9500/list.html?" + replace);
+                return navVo;
+            }).collect(Collectors.toList());
+            result.setNavs(collect);
+        }
         return result;
     }
 }

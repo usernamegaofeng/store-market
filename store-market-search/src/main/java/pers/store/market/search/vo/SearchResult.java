@@ -32,7 +32,9 @@ public class SearchResult {
      * 总页码
      */
     private Integer totalPages;
-
+    /**
+     * 页码数组
+     */
     private List<Integer> pageNavs;
 
     /**
