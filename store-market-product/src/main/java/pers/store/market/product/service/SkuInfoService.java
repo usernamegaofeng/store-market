@@ -3,6 +3,7 @@ package pers.store.market.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.product.entity.SkuInfoEntity;
+import pers.store.market.product.vo.SkuItemVo;
 
 import java.util.Map;
 
@@ -18,5 +19,7 @@ public interface SkuInfoService extends IService<SkuInfoEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     void saveSkuInfo(SkuInfoEntity skuInfoEntity);
+
+    SkuItemVo itemInfo(Long skuId);
 }
 

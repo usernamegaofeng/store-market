@@ -5,6 +5,7 @@ import pers.store.market.common.utils.PageUtils;
 import pers.store.market.product.entity.AttrGroupEntity;
 import pers.store.market.product.vo.AttrRelationVo;
 import pers.store.market.product.vo.AttrsGroupVo;
+import pers.store.market.product.vo.SpuItemAttrGroupVo;
 
 import java.util.List;
 import java.util.Map;
@@ -25,5 +26,7 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
     void removeAttrRelation(AttrRelationVo[] relationVos);
 
     List<AttrsGroupVo> getAttrGroupWithAttrs(Long categoryId);
+
+    List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catalogId);
 }
 

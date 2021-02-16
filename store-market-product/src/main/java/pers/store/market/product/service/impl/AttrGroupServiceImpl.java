@@ -24,6 +24,7 @@ import pers.store.market.product.service.AttrGroupService;
 import pers.store.market.product.service.AttrService;
 import pers.store.market.product.vo.AttrRelationVo;
 import pers.store.market.product.vo.AttrsGroupVo;
+import pers.store.market.product.vo.SpuItemAttrGroupVo;
 
 
 @Service("attrGroupService")
@@ -106,5 +107,16 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             return attrsGroupVo;
         }).collect(Collectors.toList());
         return dataList;
+    }
+
+    /**
+     * 根据spuId查询分组和属性数据
+     * @param spuId spuId
+     * @param catalogId 分类ID
+     * @return
+     */
+    @Override
+    public List<SpuItemAttrGroupVo> getAttrGroupWithAttrsBySpuId(Long spuId, Long catalogId) {
+        return this.baseMapper.getAttrGroupWithAttrsBySpuId(spuId,catalogId);
     }
 }

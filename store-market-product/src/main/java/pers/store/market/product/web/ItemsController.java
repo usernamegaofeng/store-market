@@ -1,8 +1,12 @@
 package pers.store.market.product.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import pers.store.market.product.service.SkuInfoService;
+import pers.store.market.product.vo.SkuItemVo;
 
 /**
  * @author Gaofeng
@@ -12,8 +16,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class ItemsController {
 
-    @GetMapping("/{spuId}.html")
-    public String item(@PathVariable("spuId") Long spuId){
+    @Autowired
+    private SkuInfoService skuInfoService;
+
+    @GetMapping("/{skuId}.html")
+    public String item(@PathVariable("skuId") Long skuId, Model model){
+        SkuItemVo skuItemVo = skuInfoService.itemInfo(skuId);
+        model.addAttribute("item",skuItemVo);
         return "item";
     }
 }
