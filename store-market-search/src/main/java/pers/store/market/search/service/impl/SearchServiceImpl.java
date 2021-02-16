@@ -200,7 +200,7 @@ public class SearchServiceImpl implements SearchService {
                 SkuEsModel skuEsModel = JSON.parseObject(sourceAsString, SkuEsModel.class);
                 //判断是否按关键字检索，若是就显示高亮，否则不显示
                 if (StringUtils.isNotBlank(searchParam.getKeyword())) {
-                    String skuTitle = hit.getHighlightFields().get("skuTitle").toString();
+                    String skuTitle = hit.getHighlightFields().get("skuTitle").getFragments()[0].toString();
                     skuEsModel.setSkuTitle(skuTitle);
                 }
                 products.add(skuEsModel);
