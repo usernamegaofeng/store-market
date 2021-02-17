@@ -5997,10 +5997,7 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
             <label for="username" class="other_label">验 证 码
                 <input maxlength="20" type="text" placeholder="请输入验证码" class="caa">
             </label>
-            <span id="code"></span>
-            <div class="tips">
-
-            </div>
+            <a id="sendCode">发送验证码</a>
         </div>
         <div class="arguement">
             <input type="checkbox" id="xieyi"> 阅读并同意
@@ -6254,6 +6251,33 @@ Cookie</span>是由网页服务器存放在您的访问设备上的文本文件�
     $(".cuo").click(function () {
         $(".zong").hide();
     });
+
+
+    $("#sendCode").click(function () {
+        if ($(this).hasClass("disabled")) {
+
+        } else {
+            timeOutChangeStyle();
+        }
+    })
+
+    var num = 60;
+
+    //定时任务
+    function timeOutChangeStyle() {
+        $("#sendCode").attr("class", "disabled");
+        if (num == 0) {
+            $("#sendCode").text("发送验证码");
+            $("#sendCode").attr("class", "");
+            num = 60;
+        } else {
+            var str = num + "s后再次发送";
+            $("#sendCode").text(str);
+            num--;
+            setTimeout("timeOutChangeStyle()", 1000)
+        }
+
+    }
 </script>
 </body>
 
