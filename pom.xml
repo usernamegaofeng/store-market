@@ -27,6 +27,7 @@
         <module>store-market-gateway</module>
         <module>store-market-third-party</module>
         <module>store-market-search</module>
+        <module>store-market-auth</module>
     </modules>
 
     <properties>

@@ -1,0 +1,17 @@
+server:
+  port: 9600
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        namespace: c8bceb9e-4b19-446e-a836-8bcb843871be
+        server-addr: 47.97.69.141:8848
+
+  thymeleaf:
+    cache: false
+
+#日志等级
+logging:
+  level:
+    pers.store.market.auth: info
