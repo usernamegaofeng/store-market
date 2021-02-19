@@ -26,7 +26,7 @@ import java.util.Map;
 public class OssController {
 
     @Autowired
-    OSS ossClient;
+    private OSS ossClient;
     @Value("${spring.cloud.alicloud.oss.endpoint}")
     String endpoint;
     @Value("${spring.cloud.alicloud.oss.bucket}")

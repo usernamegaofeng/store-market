@@ -8,10 +8,15 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pers.store.market.common.enums.ResultEnum;
 import pers.store.market.member.entity.MemberEntity;
+import pers.store.market.member.exception.PhoneNumExistException;
+import pers.store.market.member.exception.UserExistException;
 import pers.store.market.member.service.MemberService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.R;
+import pers.store.market.member.vo.UserLoginVo;
+import pers.store.market.member.vo.UserRegisterVo;
 
 
 /**
@@ -29,6 +34,31 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+    @PostMapping("/login")
+    @ApiOperation(value = "用户登录")
+    @ApiImplicitParam(paramType = "body", name = "userLoginVo", dataType = "UserLoginVo", required = true, value = "用户登录参数vo")
+    public R login(@RequestBody UserLoginVo userLoginVo) {
+        MemberEntity memberEntity = memberService.login(userLoginVo);
+        if (memberEntity != null) {
+            return R.ok().put("memberEntity", memberEntity);
+        }
+        return R.error(ResultEnum.USERNAME_OR_PASSWORD_ERROR.getCode(), ResultEnum.USERNAME_OR_PASSWORD_ERROR.getMsg());
+    }
+
+
+    @PostMapping("/register")
+    @ApiOperation(value = "用户注册")
+    @ApiImplicitParam(paramType = "body", name = "registerVo", dataType = "UserRegisterVo", required = true, value = "用户注册参数vo")
+    public R register(@RequestBody UserRegisterVo registerVo) {
+        try {
+            memberService.register(registerVo);
+            return R.ok();
+        } catch (UserExistException userExistException) {
+            return R.error(ResultEnum.USERNAME_EXIST.getCode(), ResultEnum.USERNAME_EXIST.getMsg());
+        } catch (PhoneNumExistException phoneNumExistException) {
+            return R.error(ResultEnum.PHONE_EXIST.getCode(), ResultEnum.PHONE_EXIST.getMsg());
+        }
+    }
 
     @GetMapping("/list")
     @ApiOperation(value = "分页查询列表")

@@ -9,6 +9,7 @@ spring:
       oss:
         endpoint: oss-cn-hangzhou.aliyuncs.com
         bucket: 2021-test
+
     nacos:
       discovery:
         server-addr: 47.97.69.141:8848

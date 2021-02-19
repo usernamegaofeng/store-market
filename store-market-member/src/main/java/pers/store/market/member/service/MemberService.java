@@ -3,6 +3,8 @@ package pers.store.market.member.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.member.entity.MemberEntity;
+import pers.store.market.member.vo.UserLoginVo;
+import pers.store.market.member.vo.UserRegisterVo;
 
 import java.util.Map;
 
@@ -16,5 +18,9 @@ import java.util.Map;
 public interface MemberService extends IService<MemberEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void register(UserRegisterVo registerVo);
+
+    MemberEntity login(UserLoginVo userLoginVo);
 }
 

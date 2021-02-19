@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author Gaofeng
  * @date 2021/2/17 下午3:08
  * @description: 视图页面跳转配置
- * 不需要写controller进行页面的跳转
+ * 不需要写controller进行页面的跳转逻辑
  */
 @Configuration
 public class ViewsControllerConfig implements WebMvcConfigurer {
