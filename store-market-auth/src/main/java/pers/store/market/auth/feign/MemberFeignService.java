@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import pers.store.market.auth.vo.UserLoginVo;
 import pers.store.market.auth.vo.UserRegisterVo;
+import pers.store.market.common.domain.vo.SocialUserVo;
 import pers.store.market.common.utils.R;
 
 /**
@@ -20,4 +21,7 @@ public interface MemberFeignService {
 
     @PostMapping("/member/member/login")
     R login(@RequestBody UserLoginVo userLoginVo);
+
+    @PostMapping("/member/member/oauth2/login)")
+    R login(@RequestBody SocialUserVo socialUserVo);
 }

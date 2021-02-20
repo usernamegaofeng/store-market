@@ -114,4 +114,10 @@ public class MemberEntity implements Serializable {
     @ApiModelProperty(value = "注册时间")
     private Date createTime;
 
+    @ApiModelProperty(value = "社交登录交换数据的token令牌")
+    private String accessToken;
+    @ApiModelProperty(value = "社交用户ID")
+    private String uid;
+    @ApiModelProperty(value = "过期时间")
+    private Long expiresIn;
 }

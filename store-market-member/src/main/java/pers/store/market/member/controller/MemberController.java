@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pers.store.market.common.domain.vo.SocialUserVo;
 import pers.store.market.common.enums.ResultEnum;
 import pers.store.market.member.entity.MemberEntity;
 import pers.store.market.member.exception.PhoneNumExistException;
@@ -33,6 +34,20 @@ public class MemberController {
 
     @Autowired
     private MemberService memberService;
+
+
+    @RequestMapping("/oauth2/login")
+    @ApiOperation(value = "新浪微博登录")
+    @ApiImplicitParam(paramType = "body", name = "socialUser", dataType = "SocialUserVo", required = true, value = "社交登录vo类")
+    public R login(@RequestBody SocialUserVo socialUser) {
+        MemberEntity entity = memberService.login(socialUser);
+        if (entity != null) {
+            return R.ok().put("memberEntity", entity);
+        } else {
+            return R.error();
+        }
+    }
+
 
     @PostMapping("/login")
     @ApiOperation(value = "用户登录")
