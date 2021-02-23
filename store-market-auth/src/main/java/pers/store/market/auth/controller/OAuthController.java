@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * @author Gaofeng
  * @date 2021/2/20 上午10:59
- * @description:
+ * @description: 社交登录控制器
  */
 @Controller
 public class OAuthController {
@@ -36,7 +36,7 @@ public class OAuthController {
         query.put("client_id", "2144471074");
         query.put("client_secret", "ff63a0d8d591a85a29a19492817316ab");
         query.put("grant_type", "authorization_code");
-        query.put("redirect_uri", "http://auth.gulimall.com/oauth2.0/weibo/success");
+        query.put("redirect_uri", "http://localhost:9600/oauth2.0/weibo/success");
         query.put("code", code);
         //发送post请求换取token
         HttpResponse response = HttpUtils.doPost("https://api.weibo.com", "/oauth2/access_token", "post", new HashMap<String, String>(), query, new HashMap<String, String>());
