@@ -1,5 +1,8 @@
 server:
   port: 9600
+  servlet:
+    session:
+      timeout: 30m  #session存储时间,默认30分钟
 
 spring:
   cloud:
@@ -21,7 +24,8 @@ spring:
         max-wait: -1ms    # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-idle: 10     # 连接池中的最大空闲连接
         min-idle: 5     # 连接池中的最小空闲连接
-
+  session:
+    store-type: redis  #session类型
 
 #日志等级
 logging:

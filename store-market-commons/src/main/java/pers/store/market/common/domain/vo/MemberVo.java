@@ -1,4 +1,4 @@
-package pers.store.market.auth.vo;
+package pers.store.market.common.domain.vo;
 
 import java.util.Date;
 
