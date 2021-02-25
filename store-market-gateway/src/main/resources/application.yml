@@ -43,12 +43,19 @@ spring:
           filters:
             - StripPrefix=1
 
+        - id: cart-route
+          uri: lb://store-cart
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - StripPrefix=1
+
         - id: third-party-route
           uri: lb://store-third-party
           predicates:
             - Path=/api/thirdparty/**
           filters:
-            - RewritePath=/api/thirdparty(?<segment>/?.*), /$\{segment}  #重写路径
+            - RewritePath=/api/thirdparty(?<segment>/?.*), /$\{segment}  #重写路径,将(?<segment>/?.*)前面的路径覆盖掉
 
         - id: admin-route
           uri: lb://store-admin

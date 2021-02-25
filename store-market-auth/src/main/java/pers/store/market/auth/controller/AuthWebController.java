@@ -47,6 +47,17 @@ public class AuthWebController {
     @Autowired
     private ThirdPartyFeignService thirdPartyFeignService;
 
+    @GetMapping("/login.html")
+    public String loginPage(HttpSession httpSession) {
+        Object attribute = httpSession.getAttribute(AuthConstant.LOGIN_USER);
+        if (null == attribute) {
+            //没有登录返回登录页
+            return "login";
+        }
+        return "redirect:http://localhost:9300";
+    }
+
+
     @GetMapping("/sms/sendCode")
     @ResponseBody
     public R sendCode(@RequestParam("phone") @NotBlank String phone) {

@@ -60,12 +60,12 @@
 			`
 			<ul class="header_ul_right">
 				<li style="border: 0;">
-					<a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/login.html"
+					<a th:if="${session.loginUser == null}" href="http://localhost:9600/login.html"
 					   class="aa">你好，请登录</a>
 					<a th:if="${session.loginUser != null}">欢迎, [[${session.loginUser.nickname}]]</a>
 				</li>
 				<li>
-					<a th:if="${session.loginUser == null}" href="http://auth.gulimall.com/reg.html"
+					<a th:if="${session.loginUser == null}" href="http://localhost:9600/register.html"
 					   style="color: red;">免费注册</a>
 				</li>
 				<li><a href="http://member.gulimall.com/memberOrder.html" class="aa">我的订单</a> |</li>
@@ -680,7 +680,7 @@
 
 					<div class="box-btns-two"
 						 th:if="${item.seckillSkuVo == null }">
-						<a class="addToCart" href="http://cart.gulimall.com/addToCart" th:attr="skuId=${item.info.skuId}">
+						<a class="addToCart" href="http://localhost:9700/addToCart" th:attr="skuId=${item.info.skuId}">
 							加入购物车
 						</a>
 					</div>
@@ -1258,7 +1258,8 @@
 			</li>
 			<li>|</li>
 			<li>
-				<a href="item/##">合作招商</a>
+				<a href
+						   ="item/##">合作招商</a>
 			</li>
 			<li>|</li>
 			<li>
@@ -1386,12 +1387,12 @@
 	};
 
 
-	$(".addToCart").click(function () {
-		let skuId = $(this).attr("skuId");
-		let num = $("#productNum").val();
-		location.href = "http://cart.gulimall.com/addCartItem?skuId=" + skuId + "&num=" + num;
-		return false;
-	});
+	// $(".addToCart").click(function () {
+	// 	let skuId = $(this).attr("skuId");
+	// 	let num = $("#productNum").val();
+	// 	location.href = "http://localhost:9700/addCartItem?skuId=" + skuId + "&num=" + num;
+	// 	return false;
+	// });
 
 	$(".seckill").click(function () {
 		var isLogin = [[${session.loginUser != null}]];     //true
