@@ -98,7 +98,7 @@
                     <a href="http://localhost:9600/login.html">你好，[[${session.loginUser==null?'请登录':session.loginUser.username}]]</a>
                 </li>
                 <li>
-                    <a href="http://localhost:9600/register.html" class="li_2">免费注册</a>
+                    <a href="http://localhost:9600/register.html" class="li_2" th:if="${session.loginUser == null}">免费注册</a>
                 </li>
                 <span>|</span>
                 <li>
