@@ -1,5 +1,7 @@
 package pers.store.market.auth.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,11 @@ import pers.store.market.auth.feign.ThirdPartyFeignService;
 import pers.store.market.auth.vo.UserLoginVo;
 import pers.store.market.auth.vo.UserRegisterVo;
 import pers.store.market.common.constant.AuthConstant;
+import pers.store.market.common.domain.vo.MemberVo;
 import pers.store.market.common.enums.ResultEnum;
 import pers.store.market.common.utils.R;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
 import java.util.Map;
@@ -105,15 +109,20 @@ public class AuthWebController {
     }
 
     @PostMapping("/login")
-    public String login(@Validated UserLoginVo userLoginVo, RedirectAttributes attributes) {
+    public String login(@Validated UserLoginVo userLoginVo, RedirectAttributes attributes, HttpSession httpSession) {
         R r = memberFeignService.login(userLoginVo);
-        if (r.getCode() != 0) {
-            Map<String, String> errors = new HashMap<>();
-            errors.put("msg", (String) r.get("msg"));
-            attributes.addFlashAttribute("errors", errors);
-            return "redirect:http://localhost:9600/login.html";
+        if (r.getCode() == 0) {
+            String jsonString = JSON.toJSONString(r.get("memberEntity"));
+            MemberVo memberResponseVo = JSON.parseObject(jsonString, new TypeReference<MemberVo>() {
+            });
+            log.info("登录成功,数据 ===> {}", memberResponseVo.toString());
+            httpSession.setAttribute(AuthConstant.LOGIN_USER, memberResponseVo);
+            return "redirect:http://localhost:9300";
         }
-        return "redirect:http://localhost:9300/index.html";
+        Map<String, String> errors = new HashMap<>();
+        errors.put("msg", (String) r.get("msg"));
+        attributes.addFlashAttribute("errors", errors);
+        return "redirect:http://localhost:9600/login.html";
     }
 
 }

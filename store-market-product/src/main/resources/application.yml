@@ -38,7 +38,9 @@ spring:
       use-key-prefix: false #如果指定了前缀就用我们指定的前缀，如果没有就默认使用缓存的名字作为前缀
       cache-null-values: true #是否缓存空值，防止缓存穿透
     type: redis
-
+  # session存储类型
+  session:
+    store-type: redis
 
 
 # mybatis plus配置

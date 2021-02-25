@@ -2,6 +2,7 @@ package pers.store.market.auth.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.Map;
  * @date 2021/2/20 上午10:59
  * @description: 社交登录控制器
  */
+@Slf4j
 @Controller
 public class OAuthController {
 
@@ -52,6 +54,7 @@ public class OAuthController {
                 String jsonString = JSON.toJSONString(login.get("memberEntity"));
                 MemberVo memberResponseVo = JSON.parseObject(jsonString, new TypeReference<MemberVo>() {
                 });
+                log.info("社交登录成功,数据 ===> {}", memberResponseVo);
                 session.setAttribute(AuthConstant.LOGIN_USER, memberResponseVo);
                 return "redirect:http://localhost:9300/index.html";
             } else {

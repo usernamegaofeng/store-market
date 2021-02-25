@@ -1,4 +1,4 @@
-package pers.store.market.auth.config;
+package pers.store.market.product.config;
 
 import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import org.springframework.context.annotation.Bean;

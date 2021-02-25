@@ -1,5 +1,8 @@
 package pers.store.market.common.domain.vo;
 
+import lombok.Data;
+import lombok.ToString;
+
 import java.util.Date;
 
 /**
@@ -7,6 +10,8 @@ import java.util.Date;
  * @date 2021/2/20 上午11:03
  * @description:
  */
+@Data
+@ToString
 public class MemberVo {
 
     private Long id;
