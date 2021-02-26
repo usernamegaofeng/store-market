@@ -1,6 +1,7 @@
 package pers.store.market.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import io.swagger.annotations.Api;
@@ -29,6 +30,11 @@ public class SkuSaleAttrValueController {
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;
 
+
+    @GetMapping("/getSkuSaleAttrAsStringList")
+    public List<String> getSkuSaleAttrAsStringList(@RequestParam("skuId") Long skuId){
+        return skuSaleAttrValueService.getSkuSaleAttrAsStringList(skuId);
+    }
 
     @GetMapping("/list")
     @ApiOperation(value = "分页查询列表")
