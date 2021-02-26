@@ -1,9 +1,8 @@
 package pers.store.market.cart.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -12,14 +11,18 @@ import pers.store.market.cart.feign.ProductFeignService;
 import pers.store.market.cart.interceptor.CartInterceptor;
 import pers.store.market.cart.service.CartService;
 import pers.store.market.cart.vo.CartItemVo;
+import pers.store.market.cart.vo.CartVo;
 import pers.store.market.cart.vo.SkuInfoVo;
+import pers.store.market.common.constant.CartConstant;
 import pers.store.market.common.domain.dto.UserInfoContent;
 import pers.store.market.common.utils.R;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 /**
  * @author Gaofeng
@@ -29,8 +32,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Slf4j
 @Service
 public class CartServiceImpl implements CartService {
-
-    private final String CART_PREFIX = "cart:";
 
     @Autowired
     private ThreadPoolExecutor threadPoolExecutor;
@@ -89,14 +90,89 @@ public class CartServiceImpl implements CartService {
         return cartItemVo;
     }
 
+    @Override
+    public CartVo getCart() {
+        CartVo cartVo = new CartVo();
+        UserInfoContent userInfoContent = CartInterceptor.userContent.get();
+        List<CartItemVo> tempCart = new ArrayList<>();
+        //1.用户未登录，直接通过user-key获取临时购物车
+        if (userInfoContent.getUserId() == null) {
+            tempCart = getCartByKey(userInfoContent.getUserKey());
+            cartVo.setItems(tempCart);
+        } else {
+            //2.用户登录
+            //查询userId对应的购物车
+            List<CartItemVo> userCart = getCartByKey(userInfoContent.getUserId().toString());
+            //查询user-key对应的临时购物车，并和用户购物车合并
+            if (tempCart != null && tempCart.size() > 0) {
+                for (CartItemVo cartItemVo : tempCart) {
+                    userCart.add(cartItemVo);
+                    //在redis中更新数据
+                    addCartItemToCart(cartItemVo.getSkuId(), cartItemVo.getCount());
+                }
+            }
+            cartVo.setItems(userCart);
+            //删除临时购物车数据
+            stringRedisTemplate.delete(CartConstant.CART_PREFIX + userInfoContent.getUserKey());
+        }
+        return cartVo;
+    }
+
+
+    @Override
+    public void checkCart(Long skuId, Integer isChecked) {
+        BoundHashOperations<String, Object, Object> ops = getRedisOperations();
+        String cartJson = (String) ops.get(skuId.toString());
+        CartItemVo cartItemVo = JSON.parseObject(cartJson, CartItemVo.class);
+        cartItemVo.setCheck(isChecked == 1);
+        ops.put(skuId.toString(), JSON.toJSONString(cartItemVo));
+    }
+
+    @Override
+    public void changeItemCount(Long skuId, Integer num) {
+        BoundHashOperations<String, Object, Object> ops = getRedisOperations();
+        String cartJson = (String) ops.get(skuId.toString());
+        CartItemVo cartItemVo = JSON.parseObject(cartJson, CartItemVo.class);
+        cartItemVo.setCount(num);
+        ops.put(skuId.toString(), JSON.toJSONString(cartItemVo));
+    }
+
+    @Override
+    public void deleteItem(Long skuId) {
+        BoundHashOperations<String, Object, Object> ops = getRedisOperations();
+        ops.delete(skuId.toString());
+    }
+
+    @Override
+    public List<CartItemVo> getCheckedItems() {
+        UserInfoContent userInfoTo = CartInterceptor.userContent.get();
+        List<CartItemVo> cartByKey = getCartByKey(userInfoTo.getUserId().toString());
+        return cartByKey.stream().filter(CartItemVo::getCheck).collect(Collectors.toList());
+    }
+
+
+    //根据userKey获取所有的购物项列表
+    private List<CartItemVo> getCartByKey(String userKey) {
+        BoundHashOperations<String, Object, Object> ops = stringRedisTemplate.boundHashOps(CartConstant.CART_PREFIX + userKey);
+        List<Object> values = ops.values();
+        if (values != null && values.size() > 0) {
+            List<CartItemVo> cartItemVos = values.stream().map(obj -> {
+                String json = (String) obj;
+                return JSON.parseObject(json, CartItemVo.class);
+            }).collect(Collectors.toList());
+            return cartItemVos;
+        }
+        return null;
+    }
+
     //构造Redis操作对象
     private BoundHashOperations<String, Object, Object> getRedisOperations() {
         UserInfoContent userInfoContent = CartInterceptor.userContent.get();
         String cartKey = "";
         if (userInfoContent.getUserId() != null) {
-            cartKey = cartKey + CART_PREFIX + userInfoContent.getUserId();
+            cartKey = cartKey + CartConstant.CART_PREFIX + userInfoContent.getUserId();
         } else {
-            cartKey = cartKey + CART_PREFIX + userInfoContent.getUserKey();
+            cartKey = cartKey + CartConstant.CART_PREFIX + userInfoContent.getUserKey();
         }
         BoundHashOperations<String, Object, Object> operations = stringRedisTemplate.boundHashOps(cartKey);
         return operations;

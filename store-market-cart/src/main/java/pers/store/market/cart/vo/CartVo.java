@@ -67,19 +67,18 @@ public class CartVo {
     }
 
     public BigDecimal getTotalAmount() {
-        BigDecimal total = new BigDecimal(0);
-        if (items != null && items.size() > 0) {
-            for (CartItemVo item : items) {
-                total.add(item.getTotalPrice());
+        BigDecimal amount = new BigDecimal("0");
+        if(this.items != null && this.items.size() > 0){
+            for (CartItemVo item : this.items) {
+                if(item.getCheck()){
+                    BigDecimal totalPrice = item.getTotalPrice();
+                    amount = amount.add(totalPrice);
+                }
             }
         }
-        total.subtract(reduce);
-        return total;
+        return amount.subtract(this.getReduce());
     }
 
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
 
     public BigDecimal getReduce() {
         return reduce;

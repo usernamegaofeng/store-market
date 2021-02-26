@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-    <title></title>
+    <title>购物车成功页面</title>
     <script type="text/javascript" src="./js/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="./bootstrap/js/bootstrap.js"></script>
     <script type="text/javascript" src="./js/swiper.min.js"></script>
@@ -65,9 +65,12 @@
             <div class="m succeed-box">
                 <div class="mc success-cont">
                     <div class="success-lcol">
-                        <div class="success-top"><b class="succ-icon"></b>
+                        <div th:if="${item != null}" class="success-top"><b class="succ-icon"></b>
                             <h3 class="ftx-02">商品已成功加入购物车</h3></div>
                         <div class="p-item">
+                            <div th:if="${item == null}" class="success-top"><b class="succ-icon"></b>
+                                <h3 class="ftx-02">购物车内无此商品</h3><a href="http://localhost:9300">去购物</a></div>
+                            <div class="p-item">
                             <div class="p-img">
                                 <a href="/javascript:;" target="_blank"><img style="height: 60px;width:60px;"
                                                                              th:src="${item.image}"
