@@ -3,18 +3,38 @@ server:
 
 spring:
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/store_oms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 12345
 
-  #服务注册
+  # 服务注册
   cloud:
     nacos:
       discovery:
         server-addr:  47.97.69.141:8848
         namespace: c8bceb9e-4b19-446e-a836-8bcb843871be
+  # redis配置
+  redis:
+    host: 172.16.97.3
+    port: 6379
+    timeout: 6000ms    # 连接超时时长（毫秒）
+    jedis:
+      pool:
+        max-active: 1000   # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1ms    # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10     # 连接池中的最大空闲连接
+        min-idle: 5     # 连接池中的最小空闲连接
 
+  session:
+    store-type: redis
+
+  thymeleaf:
+    cache: false
+
+  rabbitmq:
+    host: 47.97.69.141
+    port: 5672
 
 # mybatis plus配置
 mybatis-plus:
@@ -30,3 +50,10 @@ mybatis-plus:
     cache-enabled: false
     call-setters-on-nulls: true
     jdbc-type-for-null: 'null'
+
+# 线程池配置
+thread:
+  config:
+    core-size: 50
+    max-size: 300
+    keep-alive-time: 10

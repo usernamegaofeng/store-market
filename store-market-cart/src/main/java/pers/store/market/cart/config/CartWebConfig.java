@@ -14,7 +14,7 @@ import pers.store.market.cart.interceptor.CartInterceptor;
 public class CartWebConfig implements WebMvcConfigurer {
 
     /**
-     * 添加监听器
+     * 添加拦截器
      *
      * @param registry
      */
