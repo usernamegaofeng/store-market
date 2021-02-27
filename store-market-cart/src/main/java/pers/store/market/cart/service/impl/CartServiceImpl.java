@@ -17,6 +17,7 @@ import pers.store.market.common.constant.CartConstant;
 import pers.store.market.common.domain.dto.UserInfoContent;
 import pers.store.market.common.utils.R;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -40,6 +41,13 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private ProductFeignService productFeignService;
 
+    /**
+     * 添加到购物车
+     *
+     * @param skuId
+     * @param num
+     * @return
+     */
     @Override
     public CartItemVo addCartItemToCart(Long skuId, int num) {
         BoundHashOperations<String, Object, Object> redisOperations = getRedisOperations();
@@ -82,6 +90,12 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    /**
+     * 获取购物车项
+     *
+     * @param skuId
+     * @return
+     */
     @Override
     public CartItemVo getCartItem(Long skuId) {
         BoundHashOperations<String, Object, Object> redisOperations = getRedisOperations();
@@ -90,10 +104,15 @@ public class CartServiceImpl implements CartService {
         return cartItemVo;
     }
 
+    /**
+     * 获取购物车数据
+     *
+     * @return
+     */
     @Override
     public CartVo getCart() {
         CartVo cartVo = new CartVo();
-        UserInfoContent userInfoContent = CartInterceptor.userContent.get();
+        UserInfoContent userInfoContent = CartInterceptor.userContextHolder.get();
         List<CartItemVo> tempCart = new ArrayList<>();
         //1.用户未登录，直接通过user-key获取临时购物车
         if (userInfoContent.getUserId() == null) {
@@ -145,9 +164,33 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartItemVo> getCheckedItems() {
-        UserInfoContent userInfoTo = CartInterceptor.userContent.get();
+        UserInfoContent userInfoTo = CartInterceptor.userContextHolder.get();
         List<CartItemVo> cartByKey = getCartByKey(userInfoTo.getUserId().toString());
         return cartByKey.stream().filter(CartItemVo::getCheck).collect(Collectors.toList());
+    }
+
+    //获取用户当前所有的购物车项,必须为登录情况下
+    @Override
+    public List<CartItemVo> getCurrentUserCartItems() {
+        UserInfoContent userInfoContent = CartInterceptor.userContextHolder.get();
+        if (userInfoContent.getUserId() != null) {
+            String cartKey = CartConstant.CART_PREFIX + userInfoContent.getUserId();
+            List<CartItemVo> cartItemsList = getCartByKey(cartKey);
+            //获取所有被选中的购物项
+            List<CartItemVo> dataList = cartItemsList.stream().filter(CartItemVo::getCheck).map(item -> {
+                //获取商品最新的价格
+                R r = productFeignService.getCurrentPrice(item.getSkuId());
+                if (r.getCode() == 0) {
+                    String price = (String) r.get("price");
+                    item.setPrice(new BigDecimal(price));
+                }
+                return item;
+            }).collect(Collectors.toList());
+            return dataList;
+        } else {
+            return null;
+        }
+
     }
 
 
@@ -167,7 +210,7 @@ public class CartServiceImpl implements CartService {
 
     //构造Redis操作对象
     private BoundHashOperations<String, Object, Object> getRedisOperations() {
-        UserInfoContent userInfoContent = CartInterceptor.userContent.get();
+        UserInfoContent userInfoContent = CartInterceptor.userContextHolder.get();
         String cartKey = "";
         if (userInfoContent.getUserId() != null) {
             cartKey = cartKey + CartConstant.CART_PREFIX + userInfoContent.getUserId();

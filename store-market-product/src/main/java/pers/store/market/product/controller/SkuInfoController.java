@@ -30,6 +30,15 @@ public class SkuInfoController {
     private SkuInfoService skuInfoService;
 
 
+    @GetMapping("/{skuId}getPrice")
+    @ApiOperation(value = "获取sku的最新价格")
+    @ApiImplicitParam(paramType = "path", name = "skuId", dataType = "Long", required = true, value = "ID")
+    public R getCurrentPrice(@PathVariable("skuId") Long skuId) {
+        SkuInfoEntity skuInfoEntity = skuInfoService.getById(skuId);
+        return R.ok().put("price", skuInfoEntity.getPrice().toString());
+    }
+
+
     @GetMapping("/list")
     @ApiOperation(value = "分页查询列表")
     @ApiImplicitParam(paramType = "query", name = "params", dataType = "Map", required = true, value = "分页列表请求参数")

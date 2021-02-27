@@ -8,11 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import pers.store.market.cart.interceptor.CartInterceptor;
 import pers.store.market.cart.service.CartService;
 import pers.store.market.cart.vo.CartItemVo;
 import pers.store.market.cart.vo.CartVo;
-import pers.store.market.common.domain.dto.UserInfoContent;
 
 import java.util.List;
 
@@ -70,5 +68,11 @@ public class CartController {
     @RequestMapping("/getCheckedItems")
     public List<CartItemVo> getCheckedItems() {
         return cartService.getCheckedItems();
+    }
+
+    @ResponseBody
+    @RequestMapping("/getUserCartItems")
+    public List<CartItemVo> getUserCartItems(){
+        return cartService.getCurrentUserCartItems();
     }
 }

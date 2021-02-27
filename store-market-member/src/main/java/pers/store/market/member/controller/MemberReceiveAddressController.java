@@ -1,6 +1,7 @@
 package pers.store.market.member.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import io.swagger.annotations.Api;
@@ -29,6 +30,14 @@ public class MemberReceiveAddressController {
     @Autowired
     private MemberReceiveAddressService memberReceiveAddressService;
 
+
+    @GetMapping("/{id}/getAddress")
+    @ApiOperation(value = "根据会员ID获取所有的收获地址列表")
+    @ApiImplicitParam(paramType = "path", name = "id", dataType = "Long", required = true, value = "会员ID")
+    public List<MemberReceiveAddressEntity> getAddress(@PathVariable("id") Long id) {
+        List<MemberReceiveAddressEntity> dataList = memberReceiveAddressService.getAddress(id);
+        return dataList;
+    }
 
     @GetMapping("/list")
     @ApiOperation(value = "分页查询列表")

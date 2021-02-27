@@ -25,4 +25,6 @@ public interface CartService {
     void deleteItem(Long skuId);
 
     List<CartItemVo> getCheckedItems();
+
+    List<CartItemVo> getCurrentUserCartItems();
 }
