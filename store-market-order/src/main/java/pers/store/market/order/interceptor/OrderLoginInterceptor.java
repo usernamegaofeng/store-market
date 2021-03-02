@@ -7,6 +7,7 @@ import pers.store.market.common.domain.vo.MemberVo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author Gaofeng
@@ -29,15 +30,16 @@ public class OrderLoginInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        MemberVo memberVo = (MemberVo) request.getSession().getAttribute(AuthConstant.LOGIN_USER);
+        HttpSession session = request.getSession();
+        MemberVo memberVo = (MemberVo) session.getAttribute(AuthConstant.LOGIN_USER);
         //判断是否登录
-        if (null == memberVo) {
-            request.getSession().setAttribute("msg", "请先登录!");
-            response.sendRedirect("http://localhost:9600/login.html");
-            return false;
-        } else {
+        if (memberVo != null) {
             threadLocal.set(memberVo);
             return true;
+        }else {
+            session.setAttribute("msg", "请先登录!");
+            response.sendRedirect("http://localhost:9600/login.html");
+            return false;
         }
     }
 }

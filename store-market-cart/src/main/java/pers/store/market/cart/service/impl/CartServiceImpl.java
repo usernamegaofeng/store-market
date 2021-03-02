@@ -174,8 +174,7 @@ public class CartServiceImpl implements CartService {
     public List<CartItemVo> getCurrentUserCartItems() {
         UserInfoContent userInfoContent = CartInterceptor.userContextHolder.get();
         if (userInfoContent.getUserId() != null) {
-            String cartKey = CartConstant.CART_PREFIX + userInfoContent.getUserId();
-            List<CartItemVo> cartItemsList = getCartByKey(cartKey);
+            List<CartItemVo> cartItemsList = getCartByKey(userInfoContent.getUserId().toString());
             //获取所有被选中的购物项
             List<CartItemVo> dataList = cartItemsList.stream().filter(CartItemVo::getCheck).map(item -> {
                 //获取商品最新的价格
