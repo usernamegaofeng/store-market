@@ -7,6 +7,8 @@ import pers.store.market.ware.entity.WareSkuEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 商品库存
  *
@@ -22,4 +24,8 @@ public interface WareSkuDao extends BaseMapper<WareSkuEntity> {
 
     @Select("SELECT sum(stock-stock_locked) FROM wms_ware_sku where sku_id = #{item}")
     Long getStockById(@Param("item") Long item);
+
+    List<Long> listWareIdHasStock(@Param("skuId") Long skuId);
+
+    Integer orderLockStocks(@Param("skuId") Long skuId, @Param("wareId") Long wareId, @Param("num") Integer num);
 }

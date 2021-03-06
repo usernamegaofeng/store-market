@@ -19,8 +19,11 @@ import pers.store.market.common.utils.Query;
 import pers.store.market.common.utils.R;
 import pers.store.market.ware.dao.WareSkuDao;
 import pers.store.market.ware.entity.WareSkuEntity;
+import pers.store.market.ware.exception.NoStockException;
 import pers.store.market.ware.feign.ProductFeignService;
 import pers.store.market.ware.service.WareSkuService;
+import pers.store.market.ware.vo.OrderItemVo;
+import pers.store.market.ware.vo.SkuWareStockVo;
 import pers.store.market.ware.vo.WareSkuLockVo;
 
 @Slf4j
@@ -84,9 +87,51 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         return list;
     }
 
+    /**
+     * 锁定库存
+     *
+     * @param vo
+     * @return
+     */
     @Transactional
     @Override
     public boolean orderLockStock(WareSkuLockVo vo) {
+        List<OrderItemVo> locks = vo.getLocks();
+        //查询哪个库存有库存
+        List<SkuWareStockVo> collect = locks.stream().map(item -> {
+            SkuWareStockVo skuWareStockVo = new SkuWareStockVo();
+            skuWareStockVo.setSkuId(item.getSkuId());
+            skuWareStockVo.setNum(item.getCount());
+            List<Long> wareIds = wareSkuDao.listWareIdHasStock(item.getSkuId());
+            skuWareStockVo.setWareId(wareIds);
+            return skuWareStockVo;
+        }).collect(Collectors.toList());
+
+        //锁定库存
+        for (SkuWareStockVo skuWareStockVo : collect) {
+            Long skuId = skuWareStockVo.getSkuId();
+            List<Long> wareIds = skuWareStockVo.getWareId();
+            if (wareIds == null || wareIds.size() == 0) {
+                throw new NoStockException("该商品库存不足!");
+            }
+            boolean hasLock = false;
+            for (Long wareId : wareIds) {
+                //锁定库存
+                Integer count = wareSkuDao.orderLockStocks(skuId, wareId, skuWareStockVo.getNum());
+                //成功锁库存影响行数为1,没有锁定就为0
+                if (count == 1) {
+                    hasLock = true;
+                    break;
+                } else {
+                    //当前仓库没有库存,继续锁定下个库存
+                }
+
+            }
+            if (hasLock == false) {
+                //所有的仓库都没有库存
+                throw new NoStockException("该商品库存不足!");
+            }
+        }
         return true;
     }
 
