@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.order.entity.OrderEntity;
 import pers.store.market.order.vo.OrderConfirmVo;
+import pers.store.market.order.vo.OrderSubmitVo;
+import pers.store.market.order.vo.SubmitOrderResponseVo;
 
 import java.util.Map;
 
@@ -19,5 +21,7 @@ public interface OrderService extends IService<OrderEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     OrderConfirmVo confirmOrders();
+
+    SubmitOrderResponseVo submitOrder(OrderSubmitVo vo);
 }
 

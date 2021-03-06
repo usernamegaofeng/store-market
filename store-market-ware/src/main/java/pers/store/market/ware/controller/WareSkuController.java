@@ -9,11 +9,15 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pers.store.market.common.constant.WareConstant;
 import pers.store.market.common.domain.vo.SkuHasStockVo;
+import pers.store.market.common.enums.ResultEnum;
 import pers.store.market.ware.entity.WareSkuEntity;
+import pers.store.market.ware.exception.NoStockException;
 import pers.store.market.ware.service.WareSkuService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.R;
+import pers.store.market.ware.vo.WareSkuLockVo;
 
 
 /**
@@ -30,6 +34,16 @@ public class WareSkuController {
 
     @Autowired
     private WareSkuService wareSkuService;
+
+    @PostMapping(value = "/lock/order")
+    public R orderLockStock(@RequestBody WareSkuLockVo vo) {
+        try {
+            boolean lockStock = wareSkuService.orderLockStock(vo);
+            return R.ok().put("data",lockStock);
+        } catch (NoStockException e) {
+            return R.error(ResultEnum.NO_STOCK_EXCEPTION.getCode(),ResultEnum.NO_STOCK_EXCEPTION.getMsg());
+        }
+    }
 
     @PostMapping("hasStock")
     @ApiOperation(value = "查询sku是否有库存")

@@ -591,7 +591,7 @@
 			</div>
 
 			<!--地址-->
-			<div class="top-3" th:each="addr:${confirmOrderData.address}">
+			<div class="top-3 addr-item" th:each="addr:${confirmOrderData.address}">
 				<p th:attr="def=${addr.defaultStatus},addrId=${addr.id}">[[${addr.name}]]</p><span>[[${addr.name}]]  [[${addr.province}]]   [[${addr.detailAddress}]]    [[${addr.phone}]]</span>
 			</div>
 			<p class="p2">更多地址︾</p>
@@ -730,12 +730,12 @@
 				</p>
 				<p class="yfze_b">寄送至： <span id="receiveAddress"></span> 收货人：<span id="receiver"></span></p>
 			</div>
-<!--			<form action="http://order.gulimall.com/submitOrder" method="post">-->
-<!--				<input id="addrInput" type="hidden" name="addrId" />-->
-<!--				<input id="payPriceInput" type="hidden" name="payPrice">-->
-<!--				<input name="orderToken" th:value="${confirmOrder.orderToken}" type="hidden"/>-->
-<!--				<button class="tijiao" type="submit">提交订单</button>-->
-<!--			</form>-->
+			<form action="http://localhost:9200/submitOrder" method="post">
+				<input id="addrInput" type="hidden" name="addrId" />
+				<input id="payPriceInput" type="hidden" name="payPrice">
+				<input name="orderToken" th:value="${confirmOrderData.orderToken}" type="hidden"/>
+				<button class="tijiao" type="submit">提交订单</button>
+			</form>
 		</div>
 		</div>
 
@@ -968,8 +968,48 @@
                 },function(){
                     $('.h-r-1').css('display','none')
                 })
+
+				highlightAddress();
+				var addrId = $(".addr-item p[def='1']").attr("addrId");
+				getFare(addrId)
             })
 
+			function highlightAddress() {
+				$(".addr-item p").css({"border": "2px solid gray"});
+				$(".addr-item p[def='1']").css({"border": "2px solid red"});
+			}
+
+			$(".addr-item p").click(function () {
+				$(".addr-item p").attr("def", "0");
+				$(this).attr("def", "1");
+				highlightAddress();
+
+				//获取到当前地址id
+				var addrId = $(this).attr("addrId");
+
+				//发送ajax请求获取运费信息
+				getFare(addrId);
+			});
+
+			//查运费
+			function getFare(addrId) {
+				//给表单回填选择的地址
+				$("#addrInput").val(addrId);
+				$.get("http://localhost:90/api/ware/wareInfo/fare/" + addrId, function (resp) {
+					console.log(resp);
+					$("#fare").text(resp.fare);
+					var total = [[${confirmOrderData.total}]];
+
+					var payPrice = total * 1 + resp.fare * 1;
+					//设置运费
+					$("#payPrice").text(payPrice);
+					$("#payPriceInput").val(payPrice);
+
+					//设置收获地址人信息
+					$("#receiveAddress").text(resp.address.province  +" "+ resp.address.detailAddress);
+					$("#receiver").text(resp.address.name);
+				})
+			}
 
 		</script>
 	</body>

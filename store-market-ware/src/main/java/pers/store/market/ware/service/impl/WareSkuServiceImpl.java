@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.transaction.annotation.Transactional;
 import pers.store.market.common.domain.vo.SkuHasStockVo;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.Query;
@@ -20,6 +21,7 @@ import pers.store.market.ware.dao.WareSkuDao;
 import pers.store.market.ware.entity.WareSkuEntity;
 import pers.store.market.ware.feign.ProductFeignService;
 import pers.store.market.ware.service.WareSkuService;
+import pers.store.market.ware.vo.WareSkuLockVo;
 
 @Slf4j
 @Service("wareSkuService")
@@ -80,6 +82,12 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             return skuHasStockVo;
         }).collect(Collectors.toList());
         return list;
+    }
+
+    @Transactional
+    @Override
+    public boolean orderLockStock(WareSkuLockVo vo) {
+        return true;
     }
 
 }

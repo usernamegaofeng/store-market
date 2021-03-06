@@ -12,6 +12,7 @@ import pers.store.market.ware.entity.WareInfoEntity;
 import pers.store.market.ware.service.WareInfoService;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.common.utils.R;
+import pers.store.market.ware.vo.FareVo;
 
 
 /**
@@ -28,6 +29,13 @@ public class WareInfoController {
 
     @Autowired
     private WareInfoService wareInfoService;
+
+    @RequestMapping("/fare/{addrId}")
+    @ApiOperation(value = "查询运费")
+    @ApiImplicitParam(paramType = "path", name = "addrId", dataType = "Long", required = true, value = "地址ID")
+    public FareVo getFare(@PathVariable("addrId") Long addrId) {
+        return wareInfoService.getFare(addrId);
+    }
 
 
     @GetMapping("/list")

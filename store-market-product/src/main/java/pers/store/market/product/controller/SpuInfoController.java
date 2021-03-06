@@ -39,6 +39,14 @@ public class SpuInfoController {
         return R.ok();
     }
 
+    @GetMapping("/getSpuInfo/{skuId}")
+    @ApiOperation(value = "根据skuI查询spu信息")
+    @ApiImplicitParam(paramType = "path", name = "skuId", dataType = "Long", required = true, value = "skuId")
+    public R getSpuInfoBySkuId(@PathVariable("skuId") Long skuId){
+        SpuInfoEntity spuInfoEntity = spuInfoService.getSpuInfoBySkuId(skuId);
+        return R.ok().put("data",spuInfoEntity);
+    }
+
 
     @GetMapping("/list")
     @ApiOperation(value = "分页查询列表")

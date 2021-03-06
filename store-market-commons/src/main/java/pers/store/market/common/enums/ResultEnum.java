@@ -15,6 +15,7 @@ import lombok.Getter;
  *  13: 购物车
  *  14: 物流
  *  15: 会员
+ *  16: 库存
  *
  *
  */
@@ -33,7 +34,10 @@ public enum ResultEnum {
     REPEAT_SEND_CODE(15000, "验证码获取频率太高，请稍后再试!"),
     USERNAME_EXIST(15001, "用户名已存在!"),
     PHONE_EXIST(15002, "电话号码已存在!"),
-    USERNAME_OR_PASSWORD_ERROR(15003, "用户名或密码错误!");
+    USERNAME_OR_PASSWORD_ERROR(15003, "用户名或密码错误!"),
+    //库存服务
+    NO_STOCK_EXCEPTION(16001, "库存不足!");
+
 
     private int code;
     private String msg;
