@@ -36,12 +36,14 @@ public class WareSkuController {
     private WareSkuService wareSkuService;
 
     @PostMapping(value = "/lock/order")
+    @ApiOperation(value = "锁定订单库存")
+    @ApiImplicitParam(paramType = "body", name = "vo", dataType = "WareSkuLockVo", required = true, value = "参数类")
     public R orderLockStock(@RequestBody WareSkuLockVo vo) {
         try {
-            boolean lockStock = wareSkuService.orderLockStock(vo);
-            return R.ok().put("data",lockStock);
+            wareSkuService.orderLockStock(vo);
+            return R.ok();
         } catch (NoStockException e) {
-            return R.error(ResultEnum.NO_STOCK_EXCEPTION.getCode(),ResultEnum.NO_STOCK_EXCEPTION.getMsg());
+            return R.error(ResultEnum.NO_STOCK_EXCEPTION.getCode(), ResultEnum.NO_STOCK_EXCEPTION.getMsg());
         }
     }
 
