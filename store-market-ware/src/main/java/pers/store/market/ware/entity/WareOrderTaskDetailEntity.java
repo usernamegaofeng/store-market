@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.NoArgsConstructor;
 
 /**
  * 库存工作单
@@ -17,6 +19,8 @@ import io.swagger.annotations.ApiModelProperty;
  * @date 2021-01-23 16:46:46
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @TableName("wms_ware_order_task_detail")
 @ApiModel(description = "库存工作单实体类")
 public class WareOrderTaskDetailEntity implements Serializable {

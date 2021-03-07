@@ -1,6 +1,7 @@
 package pers.store.market.order.interceptor;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 import pers.store.market.common.constant.AuthConstant;
 import pers.store.market.common.domain.vo.MemberVo;
@@ -30,13 +31,18 @@ public class OrderLoginInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //路径匹配
+        boolean match = new AntPathMatcher().match("/order/order/status/**", request.getRequestURI());
+        if (match) {
+            return true;
+        }
         HttpSession session = request.getSession();
         MemberVo memberVo = (MemberVo) session.getAttribute(AuthConstant.LOGIN_USER);
         //判断是否登录
         if (memberVo != null) {
             threadLocal.set(memberVo);
             return true;
-        }else {
+        } else {
             session.setAttribute("msg", "请先登录!");
             response.sendRedirect("http://localhost:9600/login.html");
             return false;

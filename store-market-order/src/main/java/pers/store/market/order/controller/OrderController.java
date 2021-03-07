@@ -29,6 +29,11 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @GetMapping("/status/{orderSn}")
+    public R getOrderBySn(@PathVariable("orderSn") String orderSn){
+       OrderEntity orderEntity = orderService.getOrderByOrderSn(orderSn);
+        return R.ok().put("data",orderEntity);
+    }
 
     @GetMapping("/list")
     @ApiOperation(value = "分页查询列表")

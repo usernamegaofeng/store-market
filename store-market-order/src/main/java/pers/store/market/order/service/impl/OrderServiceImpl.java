@@ -197,6 +197,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         return response;
     }
 
+    @Override
+    public OrderEntity getOrderByOrderSn(String orderSn) {
+        return this.getOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+    }
+
     //保存订单
     private void saveOrder(OrderCreateDto orderCreateDto) {
         OrderEntity order = orderCreateDto.getOrder();
@@ -286,7 +291,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         Long skuId = items.getSkuId();
         //远程服务获取spu的信息
         R spuInfo = productFeignService.getSpuInfoBySkuId(skuId);
-        SpuInfoVo spuInfoData = JSON.parseObject(JSON.toJSONString(spuInfo.get("data")),SpuInfoVo.class);
+        SpuInfoVo spuInfoData = JSON.parseObject(JSON.toJSONString(spuInfo.get("data")), SpuInfoVo.class);
         orderItemEntity.setSpuId(spuInfoData.getId());
         orderItemEntity.setSpuName(spuInfoData.getSpuName());
         orderItemEntity.setSpuBrand(spuInfoData.getBrandName());

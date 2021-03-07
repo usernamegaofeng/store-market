@@ -8,16 +8,25 @@ spring:
     username: root
     password: 123456789
 
-    # 服务注册
+  # 服务注册
   cloud:
     nacos:
       discovery:
         server-addr:  47.97.69.141:8848
         namespace: c8bceb9e-4b19-446e-a836-8bcb843871be
-    # 日期数据格式化,要加上时区,不然时间对不上
+  # 如果使用jackson当序列化工具,日期数据格式化,要加上时区,不然时间对不上
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+
+  # rabbitmq
+  rabbitmq:
+    host: 47.97.69.141
+    port: 5672
+    listener:
+      simple:
+        acknowledge-mode: manual  #手动确认接收到消息
+    virtual-host: /  #虚拟地址
 
 # mybatis plus配置
 mybatis-plus:

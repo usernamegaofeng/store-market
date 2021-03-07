@@ -1,6 +1,7 @@
 package pers.store.market.ware.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import pers.store.market.common.domain.dto.mq.StockLockedDto;
 import pers.store.market.common.domain.vo.SkuHasStockVo;
 import pers.store.market.common.utils.PageUtils;
 import pers.store.market.ware.entity.WareSkuEntity;
@@ -25,5 +26,7 @@ public interface WareSkuService extends IService<WareSkuEntity> {
     List<SkuHasStockVo> hasStock(List<Long> skuIds);
 
     boolean orderLockStock(WareSkuLockVo vo);
+
+    void releaseStock(StockLockedDto stockLockedDto);
 }
 

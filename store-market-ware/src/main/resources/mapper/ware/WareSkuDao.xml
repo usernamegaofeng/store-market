@@ -17,6 +17,11 @@
         WHERE sku_id = #{skuId}
         AND stock-stock_locked >= #{num}
     </update>
+    <update id="unlockStock">
+        UPDATE wms_ware_sku SET stock_locked = stock_locked - #{num}
+        WHERE sku_id = #{skuId}
+        AND ware_id = #{wareId}
+    </update>
     <select id="listWareIdHasStock" resultType="java.lang.Long">
         SELECT ware_id FROM wms_ware_sku
         WHERE sku_id = #{skuId}

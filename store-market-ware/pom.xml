@@ -16,6 +16,11 @@
             <artifactId>store-market-commons</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <!--rabbitmq-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
 
         <!--swagger增强版依赖-->
         <!-- spring-plugin-core-1.2.0.RELEASE.jar不存在某方法,需要强制升到2.0版本才不会报错 -->
