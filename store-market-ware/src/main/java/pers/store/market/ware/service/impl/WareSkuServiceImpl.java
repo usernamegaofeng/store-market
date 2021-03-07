@@ -153,10 +153,11 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
 
                     //发送库存锁定消息至延迟队列
                     StockLockedDto lockedDto = new StockLockedDto();
-                    lockedDto.setId(wareOrderTaskEntity.getId());
                     StockDetailDto detailTo = new StockDetailDto();
                     BeanUtils.copyProperties(detailEntity, detailTo);
+
                     lockedDto.setDetailDto(detailTo);
+                    lockedDto.setId(wareOrderTaskEntity.getId());
                     rabbitTemplate.convertAndSend(RabbitmqConstant.STOCK_EVENT_EXCHANGE, RabbitmqConstant.STOCK_LOCK_ROUTING_KEY, lockedDto);
                     break;
                 } else {
@@ -201,6 +202,27 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             }
         }
 
+
+    }
+
+    /**
+     * 防止订单服务卡顿等原因导致的库存服务释放库存任务提前运行,卡顿的订单永远无法解锁库存
+     * 主动释放库存
+     */
+    @Override
+    public void releaseStock(OrderDto orderDto) {
+        String orderSn = orderDto.getOrderSn();
+        //为防止重复解锁，需要重新查询工作单
+        WareOrderTaskEntity taskEntity = wareOrderTaskService.getOne(new QueryWrapper<WareOrderTaskEntity>().eq("order_sn", orderSn));
+        if (taskEntity != null) {
+            List<WareOrderTaskDetailEntity> list = wareOrderTaskDetailService.list(new QueryWrapper<WareOrderTaskDetailEntity>().eq("task_id", taskEntity.getId()).eq("lock_Status", 1));
+            if (list != null && list.size() > 0) {
+                for (WareOrderTaskDetailEntity detailEntity : list) {
+                    //主动释放库存
+                    unlockStock(detailEntity.getSkuId(), detailEntity.getWareId(), detailEntity.getSkuNum(), detailEntity.getId());
+                }
+            }
+        }
 
     }
 

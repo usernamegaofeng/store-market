@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pers.store.market.common.constant.RabbitmqConstant;
+import pers.store.market.common.domain.dto.OrderDto;
 import pers.store.market.common.domain.dto.mq.StockLockedDto;
 import pers.store.market.ware.service.WareSkuService;
 
@@ -38,6 +39,18 @@ public class StockReleaseListener {
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
             log.error("释放订单队列出现异常 ====> {}", e.getMessage());
+            channel.basicReject(message.getMessageProperties().getDeliveryTag(), true);
+        }
+    }
+
+    @RabbitHandler
+    public void handleCloseOrderRelease(OrderDto orderDto,Message message,Channel channel) throws IOException {
+        log.info("关闭订单队列收到需要释放的订单数据 ====> {}",orderDto.toString());
+        try {
+            wareSkuService.releaseStock(orderDto);
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        }catch (Exception e){
+            log.error("关闭订单队列出现异常 ====> {}", e.getMessage());
             channel.basicReject(message.getMessageProperties().getDeliveryTag(), true);
         }
     }
