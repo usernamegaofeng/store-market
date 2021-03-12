@@ -29,6 +29,7 @@
         <module>store-market-search</module>
         <module>store-market-auth</module>
         <module>store-market-cart</module>
+        <module>store-market-session</module>
     </modules>
 
     <properties>
