@@ -5,6 +5,7 @@ import pers.store.market.common.utils.PageUtils;
 import pers.store.market.order.entity.OrderEntity;
 import pers.store.market.order.vo.OrderConfirmVo;
 import pers.store.market.order.vo.OrderSubmitVo;
+import pers.store.market.order.vo.PayVo;
 import pers.store.market.order.vo.SubmitOrderResponseVo;
 
 import java.util.Map;
@@ -27,5 +28,7 @@ public interface OrderService extends IService<OrderEntity> {
     OrderEntity getOrderByOrderSn(String orderSn);
 
     void closeOrder(OrderEntity orderEntity);
+
+    PayVo aliPayOrder(String orderSn);
 }
 

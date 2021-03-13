@@ -208,7 +208,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         //判断此订单状态是否已支付
         OrderEntity order = this.getOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderEntity.getOrderSn()));
         //如果是未支付的订单进行关闭操作
-        if (order.getStatus().equals(OrderStatusEnum.CREATE_NEW.getCode())){
+        if (order.getStatus().equals(OrderStatusEnum.CREATE_NEW.getCode())) {
             //修改状态
             OrderEntity orderUpdate = new OrderEntity();
             orderUpdate.setId(order.getId());
@@ -216,7 +216,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             this.updateById(orderUpdate);
 
             OrderDto orderDto = new OrderDto();
-            BeanUtils.copyProperties(order,orderDto);
+            BeanUtils.copyProperties(order, orderDto);
             try {
                 //TODO 确保每个消息发送成功，给每个消息做好日志记录，(给数据库保存每一个详细信息)保存每个消息的详细信息
                 rabbitTemplate.convertAndSend("order-event-exchange", "order.release.other", orderDto);
@@ -225,6 +225,30 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             }
 
         }
+    }
+
+    /**
+     * 获取当前订单的支付信息
+     *
+     * @param orderSn 订单号
+     */
+    @Override
+    public PayVo aliPayOrder(String orderSn) {
+        PayVo payVo = new PayVo();
+        OrderEntity orderInfo = this.getOrderByOrderSn(orderSn);
+
+        //保留两位小数点，向上取值
+        BigDecimal payAmount = orderInfo.getPayAmount().setScale(2, BigDecimal.ROUND_UP);
+        payVo.setTotal_amount(payAmount.toString());
+        payVo.setOut_trade_no(orderInfo.getOrderSn());
+
+        //查询订单项的数据
+        List<OrderItemEntity> orderItemInfo = orderItemService.list(
+                new QueryWrapper<OrderItemEntity>().eq("order_sn", orderSn));
+        OrderItemEntity orderItemEntity = orderItemInfo.get(0);
+        payVo.setBody(orderItemEntity.getSkuAttrsVals());
+        payVo.setSubject(orderItemEntity.getSkuName());
+        return payVo;
     }
 
     //保存订单

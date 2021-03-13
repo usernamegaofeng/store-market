@@ -35,6 +35,14 @@ spring:
   rabbitmq:
     host: 47.97.69.141
     port: 5672
+    virtual-host: /
+    publisher-confirms: true #开启发送端消息抵达Broker确认
+    publisher-returns: true #开启发送端消息抵达Queue确认
+    template:
+      mandatory: true #只要消息抵达Queue，就会异步发送优先回调returnfirm
+    listener:
+      simple:
+        acknowledge-mode: manual #手动ack消息，不使用默认的消费端确认
 
 # mybatis plus配置
 mybatis-plus:
@@ -57,3 +65,13 @@ thread:
     core-size: 50
     max-size: 300
     keep-alive-time: 10
+
+alipay:
+  app_id: 2021000117621666
+  merchant_private_key: MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCd3FV8XXZF2DNOuYGZKanj8+p6FkcGhVYsloO+ZfnHV4z2SBpKOn8SN21Enckfu4n7+EfmjL/2Kv7j8HFqCN5k7CxqWXTDjqZldi0rn5rX9KxGRn/CNsNlefMgsboRem/wcyza+7igxaechbm5+dVGLswc58tyiRQcvRs7OqyjpPxLGlLPQmqI8brZlRCn1LtAsNbs2uoDhQfkRn3sxYCK7ztlknQne+mnBVzc7DXuwTSs+LhhmAXflbUDLU4bmgX0WKfWKed5HS4tCWYCUcS1LYm9wV8HG7BL5aH8Ay9P6IGCV9bkvneIrrJCjAFQt/A54dkGgK1IJht/9L5uuSnFAgMBAAECggEAa2+4coK9av2gtbSFInN7n5uy+lJNFoAKzR/HG/8VRvksA7XAxsIXF5PHdwqYBlPBrk4kySEDyIssnH9ZANx2V2NxOxQU5r8gOi96wJTIcq+fy9hRPSG+TEL6GEc9JoYYxyHr5kGpPyomT92nMI56+2AAJLARA6uNl52QefgN5PTi4JOYccb9C4WgeBOK8o9CT8NBWlXQ+argVa+WqGmVVE5r4YgRxQpbKrdrIYSGTYiP1Xww2pPsiTDEjjMI7l3HiNJNFfq+Qogre8gYfuSCJvApg57Xe9SHSsvarwbMk0+8okg5gNYZ+cIfri76qAkjUyKMHnNuavHT7eW+t33O5QKBgQDbTOejnIow6OGZ1hIhCS0UyXEH3CK9BQUmLyPYMX0bonx0VDUotOYL23eDS3FwfU9AMMcZt4oNXx+NbnzpMfkOSdVGLezug+p4HtG/ZTTmrkMpqXOftrTtDLTAMR1XJhZv2UbaxGYux3TEQucISh8VtdkPcsoXTswYqtfB63F6cwKBgQC4R0bRiRpMIGUY0Eq5FQr5NOiYmvXs7rppz7ikY3YAfWtMRV7cIP9SvkZ08XyQIlUSVgx+nbi7fXDY1bEGWI1vuNQaSNqf1rCnSEN78L/EJpKsO4l70yuw2BRdg7I+G7AmEe8bDmk+3cwMuewyB9f/bNGVTSpjIZQZ/L8bcRak5wKBgHl76+JN6JvZlohS924HmEqooQ36m9/cNRMHEDNGjwjNBWan817ef4XYCSfZljj7ofhsTQ9pBngL1v3RVC8WuOJ6ckRTUqp6t1vdrtH5LcoQhTJCJcQ3QZkD7el+C8PoXIuPcNnl7LlDUuMaMMP906SCPYF6VIt+4j9T/Pv3AsETAoGAQbK/r9KGep+OC4OvMD8tU12mk0mj5d3SvgidlpYTKueMCnws7qQhAxntOqIhu61R0SC2gamvg8CcK+I7o7yMaEln7RsOPrAm+OzNinFxnPf3kMoFIQ1PZVQUJqbeNEBg06HPMkE4Cn6+0cazS776Jglgyy7grsj46S7v31O5M/8CgYBVf/BM4zEitlcWSPjuwMVOcXOU9fx0ZcG/flc46qnXCoO4/4uT5rAUy56TmArz0n1oKGbSfDN+4BohXQb56f/BZP5pijaNxFcAPA3EHBLDcwerxEcfJfcErjwTvVzJiIrNQSFqz/QEqzH0LOD/XguldUC2oKtri+Cg5ZYUjGzqbg==
+  alipay_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAonRzMbVdEMYqsbHvu1obdB2PIFYVSDS5ej0ASqHuTaGLCgtZUMjPCY6BlIJYqHQ3nQc25udaf3JOz+Rnh1rgiW+dyX7nKUefIYSULjU6ei9NOrJWPiyg6veOXoVbIFbssfBsoDKfBjaHXqTFiJYpwnQmrNJMUw1Ylc1NGg5M9HRNcchkU8oPVXfhlSuIh6+t+IOWRN5LEAj613cP1bl5/U/ztPtR9CKjrOInaZXyI/kU+X/JC3GZxhZDNvvZ3lnrNMnNzhyd44VhWMIrAozPYi4wxpoftbOqXSVO15XlwHILhNMNM0fEg9EUPK6zygCzWXhVK9nNd+dUTwUP+efC1QIDAQAB
+  notify_url: http://381g4d5798.qicp.vip/payed/notify
+  return_url: http://localhost:90/api/member/memberOrder.html
+  sign_type: RSA2
+  charset: utf-8
+  gatewayUrl: https://openapi.alipaydev.com/gateway.do
